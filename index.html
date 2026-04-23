@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inter-House Sports Tournament</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#07090d;
+      --panel:#0f141c;
+      --panel-2:#141b25;
+      --border:rgba(255,255,255,.09);
+      --text:#eef3ff;
+      --muted:#98a5be;
+      --accent:#8ab4ff;
+      --gold:#d4a72c;
+      --maroon:#8f2036;
+      --green:#76c81b;
+      --blue:#1274db;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,255,.35) rgba(255,255,255,.04)}
+*::-webkit-scrollbar{width:12px;height:12px}
+*::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:999px}
+*::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(138,180,255,.45),rgba(18,116,219,.65));border:2px solid rgba(7,9,13,.92);border-radius:999px}
+*::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(168,203,255,.62),rgba(18,116,219,.8))}
+    html,body{margin:0;padding:0;background:radial-gradient(circle at top,#0f1824 0%,#07090d 45%,#05070a 100%);color:var(--text);font-family:Inter,sans-serif}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    .sidebar{position:sticky;top:0;height:100vh;padding:24px;border-right:1px solid var(--border);background:rgba(8,10,14,.85);backdrop-filter:blur(18px);overflow:auto}
+    .brand{display:flex;gap:14px;align-items:center;margin-bottom:28px}
+    .brand-badge{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#132132,#0b0f15);display:grid;place-items:center;border:1px solid var(--border);box-shadow:var(--shadow);font-weight:900}
+    .brand h1{font-size:1rem;margin:0}
+    .brand p{margin:4px 0 0;color:var(--muted);font-size:.86rem}
+    .nav{display:grid;gap:8px}
+    .nav a{padding:13px 14px;border-radius:14px;color:#dce6f8;font-weight:600;border:1px solid transparent;transition:.2s ease}
+    .nav a:hover,.nav a.active{background:linear-gradient(135deg,#151c27,#0f141c);border-color:var(--border)}
+    .nav-group-title{margin:24px 0 10px;color:#71809e;font-size:.78rem;text-transform:uppercase;letter-spacing:.16em}
+    .house-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+    .house-mini{background:linear-gradient(180deg,#121822,#0d1219);border:1px solid var(--border);border-radius:18px;padding:10px;text-align:center}
+    .house-mini img{width:54px;height:54px;object-fit:contain;margin:0 auto 8px}
+    .content{padding:24px 24px 56px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+    .page-title h2{margin:0;font-size:1.75rem}
+    .page-title p{margin:6px 0 0;color:var(--muted)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{border:none;background:linear-gradient(135deg,#1e2f45,#0e1724);color:#eef3ff;padding:12px 16px;border-radius:14px;font-weight:700;cursor:pointer;border:1px solid var(--border);transition:.2s ease}
+    .btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.18)}
+    .btn.secondary{background:transparent}
+    .hero{position:relative;overflow:hidden;padding:28px;border-radius:30px;background:linear-gradient(140deg,rgba(20,27,37,.95),rgba(9,12,18,.95));border:1px solid var(--border);box-shadow:var(--shadow)}
+    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(18,116,219,.18),transparent 22%),radial-gradient(circle at 70% 10%,rgba(212,167,44,.14),transparent 20%),radial-gradient(circle at 80% 80%,rgba(118,200,27,.14),transparent 18%),radial-gradient(circle at 20% 90%,rgba(143,32,54,.14),transparent 16%);pointer-events:none}
+    .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#0e1521;border:1px solid var(--border);color:#b9c8e5;font-size:.83rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
+    .hero h3{font-size:clamp(2rem,4.8vw,4rem);margin:18px 0 12px;line-height:1.02}
+    .hero p{font-size:1.05rem;color:#b9c4d7;max-width:760px}
+    .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+    .stat{padding:16px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid var(--border)}
+    .stat .label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+    .stat .value{margin-top:8px;font-size:1.55rem;font-weight:800}
+    .hero-house-stack{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .hero-house-card{border-radius:26px;padding:14px;background:linear-gradient(180deg,#121824,#0d1017);border:1px solid var(--border);min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
+    .hero-house-card img{height:92px;object-fit:contain;margin-left:auto}
+    .hero-house-card h4{margin:8px 0 0;font-size:1rem}
+    .grid{display:grid;gap:18px;margin-top:22px}
+    .grid.cols-4{grid-template-columns:repeat(4,1fr)}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .card{background:linear-gradient(180deg,rgba(17,22,30,.96),rgba(12,16,23,.96));border:1px solid var(--border);border-radius:26px;padding:22px;box-shadow:var(--shadow)}
+    .card h3,.card h4{margin:0}
+    .card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    .card-sub{color:var(--muted);font-size:.95rem;margin-top:6px}
+    .sports-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .sport-card{padding:18px;border-radius:22px;background:linear-gradient(180deg,#101722,#0b1017);border:1px solid var(--border);transition:.2s ease}
+    .sport-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.16)}
+    .sport-card h4{margin:10px 0 8px}
+    .sport-card p{margin:0;color:var(--muted);font-size:.95rem}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;border:1px solid rgba(255,255,255,.08)}
+    .badge.not-started{background:rgba(255,255,255,.06);color:#c4cfde}
+    .badge.ongoing{background:rgba(18,116,219,.15);color:#8dc6ff}
+    .badge.completed{background:rgba(118,200,27,.14);color:#a8ff78}
+    .badge.scheduled{background:rgba(212,167,44,.16);color:#ffd973}
+    .leaderboard-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:stretch}
+    .mega-rank{display:grid;gap:14px}
+    .house-rank-card{position:relative;display:grid;grid-template-columns:auto 110px 1fr auto;gap:16px;align-items:center;padding:18px;border-radius:26px;border:1px solid var(--border);overflow:hidden;background:linear-gradient(135deg,rgba(15,20,28,.98),rgba(8,10,14,.98))}
+    .house-rank-card::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--accent-color)}
+    .house-rank-card .rank{font-size:2rem;font-weight:900;width:58px;text-align:center;color:var(--accent-color)}
+    .house-rank-card img{width:96px;height:96px;object-fit:contain}
+    .house-rank-card h3{font-size:1.3rem;margin-bottom:6px}
+    .house-rank-card .points{font-size:1.8rem;font-weight:900}
+    .house-rank-card .meta{color:var(--muted);font-size:.92rem}
+    .podium{display:grid;gap:14px}
+    .podium-item{padding:20px;border-radius:24px;border:1px solid var(--border);min-height:120px;display:flex;flex-direction:column;justify-content:space-between}
+    .podium-item strong{font-size:1.4rem}
+    .podium-item span{color:var(--muted)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:14px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.06);font-size:.95rem;vertical-align:top}
+    th{color:#aeb9ce;font-size:.82rem;text-transform:uppercase;letter-spacing:.12em}
+    .table-shell{overflow:auto}
+    .status-box{display:grid;place-items:center;min-height:280px;text-align:center;border:1px dashed rgba(255,255,255,.13);border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01))}
+    .status-box h3{font-size:1.5rem;margin:10px 0 8px}
+    .status-box p{color:var(--muted);max-width:460px}
+    .updates-list{display:grid;gap:12px}
+    .update-item{padding:16px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,#121924,#0d1219)}
+    .update-item .date{color:var(--muted);font-size:.85rem}
+    .section-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 14px}
+    .section-title h3{margin:0;font-size:1.4rem}
+    .section-title p{margin:6px 0 0;color:var(--muted)}
+    .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .result-card{padding:18px;border-radius:22px;border:1px solid var(--border);background:linear-gradient(180deg,#111821,#0b1117)}
+    .result-row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .scoreline{font-size:1.3rem;font-weight:900}
+    .chip{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.06);font-size:.82rem;color:#dce6f8}
+    .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    canvas{width:100% !important;height:360px !important}
+    .sport-header{display:grid;grid-template-columns:110px 1fr auto;gap:18px;align-items:center;margin-bottom:18px}
+    .sport-header .sport-icon{width:110px;height:110px;border-radius:24px;background:linear-gradient(135deg,#121a27,#0c1016);display:grid;place-items:center;border:1px solid var(--border);font-size:2.1rem}
+    .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 20px}
+    .kpi{padding:16px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid var(--border)}
+    .kpi .small{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+    .kpi .big{margin-top:8px;font-size:1.35rem;font-weight:800}
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .field{display:grid;gap:7px}
+    .field label{font-size:.84rem;color:#c6d1e6;font-weight:700}
+    input,select,textarea{width:100%;background:#0b1118;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px 14px;color:var(--text);font:inherit}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(138,180,255,.5);box-shadow:0 0 0 3px rgba(138,180,255,.08)}
+    textarea{min-height:92px;resize:vertical}
+    .admin-layout{display:grid;grid-template-columns:260px 1fr;gap:18px}
+    .admin-nav{display:grid;gap:10px;align-content:start}
+    .admin-section{display:none}
+    .admin-section.active{display:block}
+    .login-shell{max-width:460px;margin:40px auto}
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px}
+    .small-note{color:var(--muted);font-size:.88rem}
+    .soft-note{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--muted)}
+    .admin-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.toolbar-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.record-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn.danger{background:linear-gradient(135deg,#3b1217,#1b0d11)}
+.btn.ghost{background:rgba(255,255,255,.03)}
+.compact-grid{display:grid;gap:10px}
+.sticky-helper{position:sticky;top:16px}
+.toast-wrap{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:1000;pointer-events:none}
+.toast{min-width:260px;max-width:360px;padding:14px 16px;border-radius:18px;background:linear-gradient(180deg,rgba(16,22,31,.96),rgba(11,16,24,.96));border:1px solid var(--border);box-shadow:var(--shadow);color:var(--text);opacity:0;transform:translateY(12px);transition:.25s ease}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-color:rgba(118,200,27,.28)}
+.toast.error{border-color:rgba(220,90,105,.28)}
+.toast.info{border-color:rgba(138,180,255,.28)}
+.inline-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.admin-form-card{padding:18px;border-radius:22px;background:linear-gradient(180deg,#101722,#0b1017);border:1px solid var(--border)}
+.search-input{min-width:220px}
+    .section-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+    .admin-stat{padding:16px;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,.03)}
+    .admin-stat strong{display:block;font-size:1.4rem;margin-top:8px}
+    .empty-inline{padding:18px;border-radius:18px;border:1px dashed rgba(255,255,255,.15);text-align:center;color:var(--muted)}
+    .footer{margin-top:28px;text-align:center;color:var(--muted);font-size:.9rem}
+    .connection-pill{padding:10px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:.82rem;font-weight:700;color:#dfe9ff}
+    .connection-pill.online{border-color:rgba(118,200,27,.28);background:rgba(118,200,27,.12);color:#b7ff86}
+    .connection-pill.offline{border-color:rgba(255,140,140,.2);background:rgba(255,90,90,.08);color:#ffc4c4}
+    .sync-banner{margin-bottom:18px;padding:14px 16px;border-radius:18px;border:1px solid var(--border);background:linear-gradient(180deg,rgba(17,22,30,.9),rgba(12,16,23,.9));color:#c9d5ea}
+    .loading-shell{display:grid;place-items:center;min-height:55vh}
+    .loading-shell .loader{width:54px;height:54px;border-radius:50%;border:4px solid rgba(255,255,255,.08);border-top-color:var(--accent);animation:spin 1s linear infinite;margin:0 auto 14px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes epicPulse{0%,100%{opacity:.6}50%{opacity:1}}
+    .hero::before{content:"";position:absolute;inset:-2px;border-radius:32px;background:conic-gradient(from 0deg,rgba(118,200,27,.12),rgba(212,167,44,.12),rgba(143,32,54,.12),rgba(18,116,219,.12),rgba(118,200,27,.12));z-index:0;filter:blur(20px);animation:epicPulse 6s ease-in-out infinite}
+    .sport-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(138,180,255,.08)}
+    .house-rank-card{transition:.2s ease}
+    .house-rank-card:hover{transform:translateX(4px);box-shadow:0 4px 24px rgba(0,0,0,.3)}
+    .player-stats-block{margin-top:18px;padding:20px;border-radius:22px;background:linear-gradient(180deg,rgba(17,22,30,.96),rgba(12,16,23,.96));border:1px solid var(--border)}
+    .player-stats-block .house-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .player-stats-block .house-header img{width:38px;height:38px;object-fit:contain}
+    .player-stats-block .house-header h4{margin:0;font-size:1.1rem}
+    .stats-placeholder{padding:32px;text-align:center;border-radius:18px;border:1px dashed rgba(255,255,255,.12);color:var(--muted);background:rgba(255,255,255,.015)}
+    .stats-placeholder .ph-icon{font-size:2.5rem;margin-bottom:10px}
+    .stats-placeholder h4{margin:0 0 6px;color:#dbe6f7}
+    .player-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);margin-bottom:6px;flex-wrap:wrap}
+    .player-row .p-name{font-weight:700;min-width:120px}
+    .player-row .p-stats{display:flex;gap:10px;flex-wrap:wrap;font-size:.88rem;color:var(--muted)}
+    .player-row .p-stats strong{color:var(--text)}
+    .player-row .p-actions{display:flex;gap:6px}
+    .player-row .p-actions button{padding:6px 10px;font-size:.78rem;border-radius:10px}
+    .team-score-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:14px;background:rgba(212,167,44,.12);border:1px solid rgba(212,167,44,.25);color:#ffd973;font-weight:800;font-size:1.05rem;margin-bottom:12px}
+    .ps-form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:14px}
+    .ps-form-row .field{flex:1;min-width:120px}
+    .ps-form-row .field input{padding:10px 12px}
+    .result-team{display:flex;align-items:center;gap:10px;min-width:0}
+    .result-team strong,.player-row .p-name{overflow-wrap:anywhere}
+    .results-grid > .status-box{grid-column:1/-1}
+    .table-shell table{min-width:640px}
+    .search-input{width:100%;max-width:320px}
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(138,180,255,.35);outline-offset:2px}
+    @media (max-width: 1180px){
+      .app{grid-template-columns:1fr}
+      .sidebar{position:relative;height:auto}
+      .hero-grid,.leaderboard-hero,.charts-grid,.grid.cols-4,.grid.cols-3,.grid.cols-2,.results-grid,.admin-layout,.sport-header,.admin-summary{grid-template-columns:1fr}
+      .sports-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width: 760px){
+      .content{padding:16px 16px 40px}
+      .sidebar{padding:16px}
+      .topbar{flex-direction:column;align-items:flex-start}
+      .hero{padding:20px}
+      .hero-stats,.kpi-row{grid-template-columns:repeat(2,1fr)}
+      .sports-grid,.hero-house-stack,.house-mini-grid{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+      .house-rank-card{grid-template-columns:auto 80px 1fr;align-items:start}
+      .house-rank-card .points{grid-column:1/-1}
+      .house-rank-card img{width:80px;height:80px}
+      .ps-form-row{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge">IH</div>
+        <div>
+          <h1>Inter-House Tournament</h1>
+          <p>Simple, premium sports dashboard</p>
+        </div>
+      </div>
+
+      <div class="nav">
+        <a href="#home" data-route="home">Home</a>
+        <a href="#leaderboard" data-route="leaderboard">Overall Leaderboard</a>
+        <a href="#results" data-route="results">Match Results</a>
+        <a href="#charts" data-route="charts">Performance Charts</a>
+      </div>
+
+      <div class="nav-group-title">Sports</div>
+      <div class="nav" id="sportLinks"></div>
+
+      <div class="nav-group-title">Admin</div>
+      <div class="nav">
+        <a href="#admin" data-route="admin">Dashboard</a>
+      </div>
+
+      <div class="house-mini-grid" id="miniHouses"></div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div class="page-title">
+          <h2 id="pageHeading">Dashboard</h2>
+          <p id="pageSubheading">Live standings, sport details, and premium tournament insights.</p>
+        </div>
+        <div class="actions">
+          <div id="connectionPill" class="connection-pill">Connecting…</div>
+          <button class="btn secondary" onclick="location.hash='#results'">Latest Results</button>
+          <button class="btn" onclick="location.hash='#leaderboard'">View Leaderboard</button>
+        </div>
+      </div>
+      <div id="appView"></div>
+      <div class="footer">Built for a premium inter-house sports tournament experience.</div>
+      <div id="toastWrap" class="toast-wrap"></div>
+    </main>
+  </div>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCPTmzLkvjbsxHnUtAMTTpWwzv1faJ3FzA",
+  authDomain: "interofficetourney.firebaseapp.com",
+  projectId: "interofficetourney",
+  storageBucket: "interofficetourney.firebasestorage.app",
+  messagingSenderId: "178161758604",
+  appId: "1:178161758604:web:097b634d1476b8060466a9",
+  databaseURL: "https://interofficetourney-default-rtdb.firebaseio.com"
+};
+
+const DEFAULT_DATA = {
+  admin: { username: 'admin', password: 'projectadmin' },
+  houses: [
+    { id: 'KDG', name: 'KDG', color: '#76c81b', dark: '#0b1207', logo: 'assets/kdg.png', motto: 'Knowledge • Discipline • Growth' },
+    { id: 'APEX', name: 'APEX', color: '#d4a72c', dark: '#171208', logo: 'assets/apex.png', motto: 'Achieve • Perform • Excel' },
+    { id: 'CARCHIEF', name: 'CARCHIEF', color: '#8f2036', dark: '#17090d', logo: 'assets/carchief.png', motto: 'Courage • Accountability • Respect' },
+    { id: 'TRANSWORLD', name: 'TRANSWORLD', color: '#1274db', dark: '#081524', logo: 'assets/transworld.png', motto: 'Together • Beyond • Boundaries' }
+  ],
+  sports: [
+    { id: 'carrom', name: 'Carrom', icon: '🎯', description: 'Precision, touch and tactical finishing.', order: 1 },
+    { id: 'badminton', name: 'Badminton', icon: '🏸', description: 'Fast rallies and sharp court control.', order: 2 },
+    { id: 'football', name: 'Football', icon: '⚽', description: 'Teamwork, movement and big-match energy.', order: 3 },
+    { id: 'cricket', name: 'Cricket', icon: '🏏', description: 'Runs, wickets and disciplined execution.', order: 4 },
+    { id: 'cards', name: 'Cards', icon: '🃏', description: 'Nerve, calculation and timing.', order: 5 },
+    { id: 'quiz', name: 'Quiz', icon: '🧠', description: 'Knowledge, confidence and quick thinking.', order: 6 },
+    { id: 'pool', name: 'Pool', icon: '🎱', description: 'Angles, control and calm composure.', order: 7 },
+    { id: 'call-of-duty-pc', name: 'Call of Duty PC', icon: '🎮', description: 'Reflexes, strategy and clutch play.', order: 8 },
+    { id: 'chess', name: 'Chess', icon: '♟️', description: 'Position, planning and precision.', order: 9 }
+  ],
+  standings: [],
+  matches: [],
+  updates: [],
+  playerStats: []
+};
+
+const CACHE_KEY = 'inter_house_tournament_cache_v3';
+const AUTH_KEY = 'inter_house_admin_auth';
+const ROOT_PATH = 'tournamentData';
+
+const SPORT_FIELDS = {
+  football: { label:'Player', fields:[
+    {key:'goals',label:'Goals'},{key:'assists',label:'Assists'},{key:'cards',label:'Cards'}
+  ]},
+  cricket: { label:'Player', fields:[
+    {key:'runs',label:'Runs Scored'},{key:'wickets',label:'Wickets'}
+  ]},
+  chess: { label:'Player', fields:[
+    {key:'played',label:'Played'},{key:'wins',label:'Wins'},{key:'losses',label:'Losses'},{key:'draws',label:'Draws'}
+  ]},
+  badminton: { label:'Player / Pair', fields:[
+    {key:'played',label:'Played'},{key:'wins',label:'Wins'},{key:'losses',label:'Losses'}
+  ]},
+  carrom: { label:'Pair', fields:[
+    {key:'played',label:'Played'},{key:'wins',label:'Wins'},{key:'losses',label:'Losses'}
+  ]},
+  pool: { label:'Player', fields:[
+    {key:'wins',label:'Wins'},{key:'losses',label:'Losses'}
+  ]},
+  cards: { label:'Player / Team', fields:[
+    {key:'wins',label:'Wins'},{key:'losses',label:'Losses'}
+  ]},
+  quiz: { label:'Team Member', fields:[
+    {key:'answered',label:'Questions Answered'}
+  ], hasTeamScore: true },
+  'call-of-duty-pc': { label:'Player', fields:[
+    {key:'kills',label:'Kills'},{key:'deaths',label:'Deaths'},{key:'assists',label:'Assists'}
+  ]}
+};
+
+const state = {
+  data: loadCachedData(),
+  route: 'home',
+  params: null,
+  charts: [],
+  loading: true,
+  firebaseReady: false,
+  connectionMessage: 'Connecting to Firebase…',
+  saving: false,
+  adminView: 'houses',
+  editingMatchId: null,
+  editingStandingKey: null,
+  editingUpdateId: null,
+  matchFilter: '',
+  standingFilter: '',
+  updateFilter: '',
+  psSelectedSport: '',
+  psSelectedHouse: '',
+  psEditingIndex: -1
+};
+
+const DASH = '—';
+
+const app = initializeApp(FIREBASE_CONFIG);
+const db = getDatabase(app);
+const rootRef = ref(db, ROOT_PATH);
+
+function structured(data){ return JSON.parse(JSON.stringify(data)); }
+function loadCachedData(){
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    return normalizeData(cached || DEFAULT_DATA);
+  } catch {
+    return structured(DEFAULT_DATA);
+  }
+}
+function cacheData(data){ localStorage.setItem(CACHE_KEY, JSON.stringify(data)); }
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+}
+function escapeAttr(value){
+  return escapeHtml(value).replace(/`/g, '&#96;');
+}
+function normalizeData(source){
+  const parsed = source && typeof source === 'object' ? structured(source) : structured(DEFAULT_DATA);
+  parsed.admin ||= DEFAULT_DATA.admin;
+  parsed.houses = Array.isArray(parsed.houses) ? parsed.houses : DEFAULT_DATA.houses;
+  parsed.sports = Array.isArray(parsed.sports) ? parsed.sports : DEFAULT_DATA.sports;
+  parsed.standings = Array.isArray(parsed.standings) ? parsed.standings : [];
+  parsed.matches = Array.isArray(parsed.matches) ? parsed.matches : [];
+  parsed.updates = Array.isArray(parsed.updates) ? parsed.updates : [];
+  parsed.playerStats = Array.isArray(parsed.playerStats) ? parsed.playerStats : [];
+  return parsed;
+}
+
+async function initFirebaseSync(){
+  try {
+    const snapshot = await get(rootRef);
+    if(!snapshot.exists()){
+      await set(rootRef, DEFAULT_DATA);
+      cacheData(DEFAULT_DATA);
+      state.data = structured(DEFAULT_DATA);
+    }
+    onValue(rootRef, (snap) => {
+      state.data = normalizeData(snap.val() || DEFAULT_DATA);
+      cacheData(state.data);
+      state.loading = false;
+      state.firebaseReady = true;
+      state.connectionMessage = 'Firebase live sync connected';
+      render();
+    }, () => {
+      state.loading = false;
+      state.firebaseReady = false;
+      state.connectionMessage = 'Firebase unavailable — showing cached data';
+      render();
+    });
+  } catch (error) {
+    console.error(error);
+    state.loading = false;
+    state.firebaseReady = false;
+    state.connectionMessage = 'Firebase unavailable — showing cached data';
+    render();
+  }
+}
+
+async function persistData(nextData){
+  const normalized = normalizeData(nextData || state.data);
+  state.data = normalized;
+  cacheData(normalized);
+  state.saving = true;
+  syncConnectionPill();
+  try {
+    await set(rootRef, normalized);
+    state.firebaseReady = true;
+    state.connectionMessage = 'Firebase live sync connected';
+  } catch (error) {
+    console.error(error);
+    state.firebaseReady = false;
+    state.connectionMessage = 'Save failed — cached locally only';
+    notify('Could not save to Firebase right now. Your latest changes are only cached in this browser.', 'error');
+  } finally {
+    state.saving = false;
+    render();
+  }
+}
+
+function houseById(id){ return state.data.houses.find(h => h.id === id); }
+function sportById(id){ return state.data.sports.find(s => s.id === id); }
+function fmtDate(d){ return d ? new Date(d).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : DASH; }
+function sortedSports(){ return [...state.data.sports].sort((a,b)=>a.order-b.order); }
+function houseLabel(id){ return houseById(id)?.name || id || 'TBD'; }
+function winnerLabel(id){ return houseById(id)?.name || id || 'Draw / TBC'; }
+function getSportStandings(sportId){ return state.data.standings.filter(s => s.sportId === sportId).sort((a,b) => (a.rank || 99) - (b.rank || 99)); }
+function getSportMatches(sportId){ return state.data.matches.filter(m => m.sportId === sportId).sort((a,b)=> new Date(b.date)-new Date(a.date)); }
+function deriveSportStatus(sportId){
+  const standings = getSportStandings(sportId);
+  const matches = getSportMatches(sportId).filter(m => (m.status || '').trim());
+  if(!standings.length && !matches.length) return 'Not Started Yet';
+  const statuses = [
+    ...standings.map(s => (s.status || '').toLowerCase()).filter(Boolean),
+    ...matches.map(m => (m.status || '').toLowerCase()).filter(Boolean)
+  ];
+  if(statuses.length && statuses.every(s => s === 'completed')) return 'Completed';
+  return 'Ongoing';
+}
+function badgeClass(status){
+  if(status === 'Completed') return 'completed';
+  if(status === 'Ongoing') return 'ongoing';
+  if(status === 'Scheduled') return 'scheduled';
+  return 'not-started';
+}
+function computeLeaderboard(){
+  return state.data.houses.map(house => {
+    const rows = state.data.standings.filter(s => s.houseId === house.id);
+    const total = rows.reduce((sum,row)=>sum + Number(row.leaderboardPoints || 0),0);
+    const completedSports = rows.filter(r => (r.status || '').toLowerCase() === 'completed').length;
+    return { ...house, total, completedSports, sportEntries: rows.length };
+  }).sort((a,b)=>b.total-a.total).map((item,index)=>({ ...item, rank:index+1 }));
+}
+function buildMiniHouses(){
+  document.getElementById('miniHouses').innerHTML = state.data.houses.map(h => `
+    <div class="house-mini">
+      <img src="${escapeAttr(h.logo)}" alt="${escapeAttr(h.name)}">
+      <div style="font-weight:800">${escapeHtml(h.name)}</div>
+      <div style="font-size:.78rem;color:${h.color}">${escapeHtml((h.motto || '').split('•')[0]?.trim() || '')}</div>
+    </div>
+  `).join('');
+}
+function buildSportLinks(){
+  document.getElementById('sportLinks').innerHTML = sortedSports()
+    .map(s => `<a href="#sport/${escapeAttr(s.id)}" data-route="sport/${escapeAttr(s.id)}">${escapeHtml(s.name)}</a>`)
+    .join('');
+}
+function updateTopbar(title, subtitle){
+  document.getElementById('pageHeading').textContent = title;
+  document.getElementById('pageSubheading').textContent = subtitle;
+}
+function setActiveNav(){
+  const hash = location.hash || '#home';
+  document.querySelectorAll('.nav a').forEach(a => {
+    const href = a.getAttribute('href');
+    const active = hash === href || (hash.startsWith('#sport/') && href === hash);
+    a.classList.toggle('active', active);
+  });
+}
+function syncConnectionPill(){
+  const pill = document.getElementById('connectionPill');
+  if(!pill) return;
+  pill.className = 'connection-pill ' + (state.firebaseReady ? 'online' : 'offline');
+  pill.textContent = state.saving ? 'Saving to Firebase…' : state.connectionMessage;
+}
+function destroyCharts(){ state.charts.forEach(c => c.destroy()); state.charts = []; }
+function renderLoading(){
+  updateTopbar('Loading Tournament', 'Connecting the site to Firebase Realtime Database.');
+  return `<div class="loading-shell"><div><div class="loader"></div><h3 style="margin:0 0 8px;text-align:center">Loading live tournament data</h3><p class="small-note" style="text-align:center">Please wait while the website connects to Firebase.</p></div></div>`;
+}
+function renderBanner(){
+  return `<div class="sync-banner">${state.firebaseReady ? 'Live Firebase sync is active. Public pages update automatically when admin data changes.' : 'Firebase is not connected right now. The site is showing cached browser data until the connection returns.'}</div>`;
+}
+function renderHome(){
+  updateTopbar('Tournament Home', 'Hero overview, house momentum, live sport status and recent updates.');
+  const leaderboard = computeLeaderboard();
+  const sports = sortedSports();
+  const ongoing = sports.filter(s => deriveSportStatus(s.id) === 'Ongoing').length;
+  const completed = sports.filter(s => deriveSportStatus(s.id) === 'Completed').length;
+  const notStarted = sports.filter(s => deriveSportStatus(s.id) === 'Not Started Yet').length;
+  const leader = leaderboard[0] || state.data.houses[0];
+  return `
+    ${renderBanner()}
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Inter-House Sports Tournament</span>
+          <h3>One competition. Four houses. Nine events. One live Firebase-powered leaderboard.</h3>
+          <p>A simple, beautiful, responsive sports tournament website with real-time updates for KDG, APEX, CARCHIEF, and TRANSWORLD.</p>
+          <div class="hero-stats">
+            <div class="stat"><div class="label">Total Houses</div><div class="value">4</div></div>
+            <div class="stat"><div class="label">Sports</div><div class="value">9</div></div>
+            <div class="stat"><div class="label">Ongoing</div><div class="value">${ongoing}</div></div>
+            <div class="stat"><div class="label">Completed</div><div class="value">${completed}</div></div>
+          </div>
+        </div>
+        <div class="hero-house-stack">
+          ${leaderboard.slice(0,4).map(h => `
+            <div class="hero-house-card" style="background:linear-gradient(180deg,${hexToRgba(h.color,.20)},rgba(8,10,14,.9));border-color:${hexToRgba(h.color,.35)}">
+              <img src="${escapeAttr(h.logo)}" alt="${escapeAttr(h.name)}">
+              <div>
+                <h4>${escapeHtml(h.name)}</h4>
+                <div class="small-note">${h.total} leaderboard points</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+
+    <div class="grid cols-4">
+      <div class="card"><div class="card-header"><div><h3>Current Leader</h3><div class="card-sub">Overall first place</div></div><span class="badge ongoing">Rank #1</span></div><div style="font-size:2rem;font-weight:900;color:${leader.color}">${escapeHtml(leader.name)}</div><div class="small-note">${leader.total || 0} total points</div></div>
+      <div class="card"><div class="card-header"><div><h3>Ongoing Sports</h3><div class="card-sub">Live competitions</div></div><span class="badge ongoing">Live</span></div><div style="font-size:2rem;font-weight:900">${ongoing}</div></div>
+      <div class="card"><div class="card-header"><div><h3>Not Started</h3><div class="card-sub">Waiting for admin data</div></div><span class="badge not-started">Pending</span></div><div style="font-size:2rem;font-weight:900">${notStarted}</div></div>
+      <div class="card"><div class="card-header"><div><h3>Recent Updates</h3><div class="card-sub">Announcements published</div></div><span class="badge not-started">News</span></div><div style="font-size:2rem;font-weight:900">${state.data.updates.length}</div></div>
+    </div>
+
+    <div class="section-title"><div><h3>Sports Overview</h3><p>Each event automatically shows Not Started Yet, Ongoing, or Completed based on Firebase data.</p></div></div>
+    <div class="sports-grid">
+      ${sports.map(s => {
+        const status = deriveSportStatus(s.id);
+        const standings = getSportStandings(s.id);
+        const leaderName = standings[0] ? houseLabel(standings[0].houseId) : DASH;
+        return `
+          <a class="sport-card" href="#sport/${escapeAttr(s.id)}">
+            <span class="badge ${badgeClass(status)}">${status}</span>
+            <h4>${escapeHtml(s.icon)} ${escapeHtml(s.name)}</h4>
+            <p>${escapeHtml(s.description)}</p>
+            <div style="display:flex;justify-content:space-between;gap:10px;margin-top:14px;color:#d9e4f8;font-weight:700">
+              <span>${standings.length ? 'Leader: ' + escapeHtml(leaderName) : 'Awaiting data'}</span>
+              <span style="color:var(--muted)">${standings.length ? standings.length + ' houses' : ''}</span>
+            </div>
+          </a>
+        `;
+      }).join('')}
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="card-header"><div><h3>Tournament Progress</h3><div class="card-sub">Quick status of every event</div></div></div>
+        <div class="updates-list">
+          ${sports.map(s => {
+            const status = deriveSportStatus(s.id);
+            const count = getSportStandings(s.id).length;
+            return `
+              <div class="update-item" style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+                <div>
+                  <div style="font-weight:800">${escapeHtml(s.name)}</div>
+                  <div class="date">${count ? count + ' standings entries' : 'No standings added yet'}</div>
+                </div>
+                <span class="badge ${badgeClass(status)}">${status}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div><h3>Recent Updates</h3><div class="card-sub">Latest announcements and tournament highlights</div></div></div>
+        ${state.data.updates.length ? `<div class="updates-list">
+          ${state.data.updates.sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5).map(u => `
+            <div class="update-item">
+              <div style="font-weight:800">${escapeHtml(u.title)}</div>
+              <div class="date">${fmtDate(u.date)}</div>
+              <p style="margin:10px 0 0;color:var(--muted)">${escapeHtml(u.content)}</p>
+            </div>
+          `).join('')}
+        </div>` : `<div class="empty-inline">No updates published yet.</div>`}
+      </div>
+    </div>
+  `;
+}
+function renderLeaderboard(){
+  updateTopbar('Overall Leaderboard', 'Large premium ranking based on total leaderboard points awarded across sports.');
+  const leaderboard = computeLeaderboard();
+  const podium = leaderboard.slice(0,3);
+  return `
+    ${renderBanner()}
+    <div class="leaderboard-hero">
+      <div class="card mega-rank">
+        <div class="card-header"><div><h3>House Rankings</h3><div class="card-sub">Total points from sport standings</div></div><span class="badge ongoing">Live Table</span></div>
+        ${leaderboard.map(item => `
+          <div class="house-rank-card" style="--accent-color:${item.color}">
+            <div class="rank">#${item.rank}</div>
+            <img src="${escapeAttr(item.logo)}" alt="${escapeAttr(item.name)}">
+            <div>
+              <h3>${escapeHtml(item.name)}</h3>
+              <div class="meta">${item.completedSports} completed entries • ${item.sportEntries} total sport entries</div>
+            </div>
+            <div class="points">${item.total} pts</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="podium">
+        ${podium.map(item => `
+          <div class="podium-item" style="background:linear-gradient(180deg,${hexToRgba(item.color,.20)},rgba(12,16,23,.96));border-color:${hexToRgba(item.color,.35)}">
+            <div class="small-note">Rank #${item.rank}</div>
+            <strong>${escapeHtml(item.name)}</strong>
+            <span>${item.total} total points</span>
+            <img src="${escapeAttr(item.logo)}" alt="${escapeAttr(item.name)}" style="width:88px;height:88px;object-fit:contain;margin-left:auto">
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+function renderResults(){
+  updateTopbar('Match Results', 'Latest completed and visible matches across all sports.');
+  const visibleMatches = state.data.matches.filter(m => (m.status || '').trim()).sort((a,b)=> new Date(b.date)-new Date(a.date));
+  return `
+    ${renderBanner()}
+    <div class="results-grid">
+      ${visibleMatches.length ? visibleMatches.map(match => {
+        const a = houseById(match.houseA) || { name: match.houseA || 'TBD', logo: '', color: '#dbe7ff' };
+        const b = houseById(match.houseB) || { name: match.houseB || 'TBD', logo: '', color: '#dbe7ff' };
+        const sport = sportById(match.sportId);
+        return `
+          <div class="result-card">
+            <div class="result-row">
+              <span class="chip">${escapeHtml(sport ? sport.name : 'Sport')}</span>
+              <span class="badge ${badgeClass(match.status)}">${match.status}</span>
+            </div>
+            <h3 style="margin:14px 0 6px">${escapeHtml(match.title)}</h3>
+            <div class="small-note">${fmtDate(match.date)}</div>
+            <div class="result-row" style="margin:14px 0 12px">
+              <div class="result-team"><img src="${escapeAttr(a.logo)}" alt="${escapeAttr(a.name)}" style="width:46px;height:46px;object-fit:contain"><strong>${escapeHtml(a.name)}</strong></div>
+              <div class="scoreline" style="color:${a.color}">${safeScore(match.scoreA)}</div>
+            </div>
+            <div class="result-row">
+              <div class="result-team"><img src="${escapeAttr(b.logo)}" alt="${escapeAttr(b.name)}" style="width:46px;height:46px;object-fit:contain"><strong>${escapeHtml(b.name)}</strong></div>
+              <div class="scoreline" style="color:${b.color}">${safeScore(match.scoreB)}</div>
+            </div>
+            <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)">
+              <div style="font-weight:800">Winner: ${escapeHtml(winnerLabel(match.winner))}</div>
+              <p style="margin:8px 0 0;color:var(--muted)">${escapeHtml(match.details || 'No details provided.')}</p>
+            </div>
+          </div>
+        `;
+      }).join('') : `<div class="status-box"><div><h3>No match results yet</h3><p>Once the admin adds matches with a selected status, they will appear here automatically.</p></div></div>`}
+    </div>
+  `;
+}
+function renderCharts(){
+  updateTopbar('Performance Charts', 'Beautiful graphs for total house points and sport-wise performance.');
+  return `
+    ${renderBanner()}
+    <div class="charts-grid">
+      <div class="card"><div class="card-header"><div><h3>Total House Points</h3><div class="card-sub">Overall leaderboard comparison</div></div></div><canvas id="pointsChart"></canvas></div>
+      <div class="card"><div class="card-header"><div><h3>Sport-wise Performance</h3><div class="card-sub">Leaderboard points by house across all sports</div></div></div><canvas id="sportChart"></canvas></div>
+    </div>
+  `;
+}
+function mountCharts(){
+  destroyCharts();
+  const leaderboard = computeLeaderboard();
+  const pointCtx = document.getElementById('pointsChart');
+  const radarCtx = document.getElementById('sportChart');
+  if(pointCtx){
+    state.charts.push(new Chart(pointCtx, {
+      type: 'bar',
+      data: {
+        labels: leaderboard.map(h=>h.name),
+        datasets: [{
+          label: 'Total Points',
+          data: leaderboard.map(h=>h.total),
+          backgroundColor: leaderboard.map(h=>hexToRgba(h.color,.65)),
+          borderColor: leaderboard.map(h=>h.color),
+          borderWidth: 1.5,
+          borderRadius: 14
+        }]
+      },
+      options: chartOptions('y')
+    }));
+  }
+  if(radarCtx){
+    const sports = sortedSports();
+    state.charts.push(new Chart(radarCtx, {
+      type: 'radar',
+      data: {
+        labels: sports.map(s=>s.name),
+        datasets: state.data.houses.map(house => ({
+          label: house.name,
+          data: sports.map(sport => {
+            const entry = state.data.standings.find(st => st.sportId === sport.id && st.houseId === house.id);
+            return entry ? Number(entry.leaderboardPoints || 0) : 0;
+          }),
+          backgroundColor: hexToRgba(house.color,.15),
+          borderColor: house.color,
+          pointBackgroundColor: house.color,
+          pointBorderColor: '#fff',
+          borderWidth: 2
+        }))
+      },
+      options: chartOptions('radar')
+    }));
+  }
+}
+function chartOptions(type){
+  const common = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#dbe7ff' } } }, scales: {} };
+  if(type === 'y') common.scales = { x: { ticks: { color: '#aeb9ce' }, grid: { color: 'rgba(255,255,255,.05)' } }, y: { beginAtZero: true, ticks: { color: '#aeb9ce' }, grid: { color: 'rgba(255,255,255,.05)' } } };
+  if(type === 'radar') common.scales = { r: { angleLines: { color: 'rgba(255,255,255,.08)' }, grid: { color: 'rgba(255,255,255,.08)' }, pointLabels: { color: '#dbe7ff' }, ticks: { color: '#aeb9ce', backdropColor: 'transparent' }, suggestedMin: 0 } };
+  return common;
+}
+function renderSportPage(sportId){
+  const sport = sportById(sportId);
+  if(!sport){
+    updateTopbar('Sport Not Found', 'The requested sport could not be found.');
+    return `<div class="status-box"><div><h3>Sport not found</h3></div></div>`;
+  }
+  const standings = getSportStandings(sportId);
+  const matches = getSportMatches(sportId).filter(m => (m.status || '').trim());
+  const status = deriveSportStatus(sportId);
+  updateTopbar(`${sport.name}`, 'Status, standings, match details, points, rank and leaderboard point awards.');
+  if(!standings.length && !matches.length){
+    return `
+      ${renderBanner()}
+      <div class="card">
+        <div class="sport-header">
+          <div class="sport-icon">${escapeHtml(sport.icon)}</div>
+          <div>
+            <h3 style="font-size:1.8rem;margin:0">${escapeHtml(sport.name)}</h3>
+            <p class="card-sub">${escapeHtml(sport.description)}</p>
+          </div>
+          <span class="badge not-started">Not Started Yet</span>
+        </div>
+        <div class="status-box">
+          <div>
+            <div style="font-size:3rem">⏳</div>
+            <h3>Not Started Yet</h3>
+            <p>This sport has no standings or match data yet. Once the admin adds entries, this page will automatically switch to Ongoing or Completed.</p>
+          </div>
+        </div>
+      </div>
+      ${renderPlayerStatsForSport(sportId)}
+    `;
+  }
+  const leader = standings[0];
+  return `
+    ${renderBanner()}
+    <div class="card">
+      <div class="sport-header">
+        <div class="sport-icon">${escapeHtml(sport.icon)}</div>
+        <div>
+          <h3 style="font-size:1.8rem;margin:0">${escapeHtml(sport.name)}</h3>
+          <p class="card-sub">${escapeHtml(sport.description)}</p>
+        </div>
+        <span class="badge ${badgeClass(status)}">${status}</span>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi"><div class="small">Current Leader</div><div class="big">${escapeHtml(leader ? houseLabel(leader.houseId) : 'TBD')}</div></div>
+        <div class="kpi"><div class="small">Standings Entries</div><div class="big">${standings.length}</div></div>
+        <div class="kpi"><div class="small">Matches Listed</div><div class="big">${matches.length}</div></div>
+        <div class="kpi"><div class="small">Top Leaderboard Points</div><div class="big">${leader ? leader.leaderboardPoints : 0}</div></div>
+      </div>
+      ${standings.length ? `<div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th><th>House</th><th>Played</th><th>Won</th><th>Lost</th><th>Draw</th><th>Sport Points</th><th>Leaderboard Points</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${standings.map(row => {
+              const house = houseById(row.houseId) || {name: row.houseId, logo: ''};
+              return `
+                <tr>
+                  <td><strong>#${row.rank}</strong></td>
+                  <td><div style="display:flex;align-items:center;gap:10px"><img src="${escapeAttr(house.logo)}" alt="${escapeAttr(house.name)}" style="width:40px;height:40px;object-fit:contain"><span>${escapeHtml(house.name)}</span></div></td>
+                  <td>${row.played}</td><td>${row.won}</td><td>${row.lost}</td><td>${row.draw || 0}</td><td>${row.points}</td><td>${row.leaderboardPoints}</td>
+                  <td><span class="badge ${badgeClass(row.status)}">${row.status}</span></td>
+                </tr>
+                <tr><td colspan="9" style="color:var(--muted);padding-top:0">${escapeHtml(row.notes || 'No notes provided.')}</td></tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>` : `<div class="empty-inline">No standings added yet. Add them in Admin when the sport officially starts.</div>`}
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="card-header"><div><h3>Match Details</h3><div class="card-sub">Results and fixture notes for ${escapeHtml(sport.name)}</div></div></div>
+        ${matches.length ? `<div class="updates-list">${matches.map(match => `
+          <div class="update-item">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+              <div style="font-weight:800">${escapeHtml(match.title)}</div>
+              <div style="display:flex;gap:8px;align-items:center"><span class="small-note">${fmtDate(match.date)}</span><span class="badge ${badgeClass(match.status)}">${match.status}</span></div>
+            </div>
+            <div style="margin-top:10px;font-weight:700">${escapeHtml(houseLabel(match.houseA))} ${safeScore(match.scoreA)} - ${safeScore(match.scoreB)} ${escapeHtml(houseLabel(match.houseB))}</div>
+            <p style="margin:8px 0 0;color:var(--muted)">${escapeHtml(match.details || 'No details provided.')}</p>
+          </div>
+        `).join('')}</div>` : `<div class="status-box" style="min-height:200px"><div><h3>No match data yet</h3></div></div>`}
+      </div>
+      <div class="card">
+        <div class="card-header"><div><h3>Status Rules</h3><div class="card-sub">How the public page decides what to show</div></div></div>
+        <div class="updates-list">
+          <div class="update-item"><strong>Not Started Yet</strong><p style="margin:8px 0 0;color:var(--muted)">Shown when there are no standings and no matches with data for the sport.</p></div>
+          <div class="update-item"><strong>Ongoing</strong><p style="margin:8px 0 0;color:var(--muted)">Shown when some sport data exists but everything is not completed yet.</p></div>
+          <div class="update-item"><strong>Completed</strong><p style="margin:8px 0 0;color:var(--muted)">Shown when all current standings and matches for the sport are marked Completed.</p></div>
+        </div>
+      </div>
+    </div>
+
+    ${renderPlayerStatsForSport(sportId)}
+  `;
+}
+
+function renderAdmin(){
+  updateTopbar('Admin Dashboard', 'Manage houses, sports, match results, standings, leaderboard totals and updates.');
+  const isAuth = localStorage.getItem(AUTH_KEY) === 'true';
+  if(!isAuth){
+    return `
+      ${renderBanner()}
+      <div class="login-shell card">
+        <div class="card-header"><div><h3>Admin Login</h3><div class="card-sub">Use the Firebase-connected admin credentials to manage the tournament.</div></div></div>
+        <div class="form-grid">
+          ${field('Username', `<input id="adminUser" placeholder="Username" value="admin">`)}
+          ${field('Password', `<input id="adminPass" type="password" placeholder="Password" value="projectadmin">`)}
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button class="btn" onclick="handleAdminLogin()">Login to Dashboard</button>
+          <span class="small-note">Username: admin • Password: projectadmin</span>
+        </div>
+      </div>
+    `;
+  }
+
+  const matchRows = state.data.matches
+    .filter(m => {
+      const hay = `${m.title} ${sportById(m.sportId)?.name || ''} ${m.houseA} ${m.houseB} ${m.status || ''}`.toLowerCase();
+      return hay.includes(state.matchFilter || '');
+    })
+    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  const standingRows = state.data.standings
+    .filter(row => {
+      const hay = `${sportById(row.sportId)?.name || ''} ${row.houseId} ${row.status || ''}`.toLowerCase();
+      return hay.includes(state.standingFilter || '');
+    })
+    .sort((a,b) => (a.sportId + a.houseId).localeCompare(b.sportId + b.houseId));
+
+  const updateRows = state.data.updates
+    .filter(u => `${u.title} ${u.content}`.toLowerCase().includes(state.updateFilter || ''))
+    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  return `
+    ${renderBanner()}
+    <div class="admin-summary">
+      <div class="admin-stat"><span class="small-note">Sports</span><strong>${state.data.sports.length}</strong></div>
+      <div class="admin-stat"><span class="small-note">Standings Rows</span><strong>${state.data.standings.length}</strong></div>
+      <div class="admin-stat"><span class="small-note">Matches</span><strong>${state.data.matches.length}</strong></div>
+      <div class="admin-stat"><span class="small-note">Updates</span><strong>${state.data.updates.length}</strong></div>
+    </div>
+    <div class="admin-layout">
+      <div class="card admin-nav sticky-helper">
+        <button class="btn ${state.adminView==='houses'?'':'secondary'}" onclick="showAdminSection('houses')">Manage Houses</button>
+        <button class="btn ${state.adminView==='sports'?'':'secondary'}" onclick="showAdminSection('sports')">Manage Sports</button>
+        <button class="btn ${state.adminView==='matches'?'':'secondary'}" onclick="showAdminSection('matches')">Manage Match Results</button>
+        <button class="btn ${state.adminView==='standings'?'':'secondary'}" onclick="showAdminSection('standings')">Manage Sport Standings</button>
+        <button class="btn ${state.adminView==='leaderboard'?'':'secondary'}" onclick="showAdminSection('leaderboard')">Overall Leaderboard</button>
+        <button class="btn ${state.adminView==='updates'?'':'secondary'}" onclick="showAdminSection('updates')">Recent Updates</button>
+        <button class="btn ${state.adminView==='playerstats'?'':'secondary'}" onclick="showAdminSection('playerstats')">Manage Player Stats</button>
+        <button class="btn danger" onclick="logoutAdmin()">Logout</button>
+      </div>
+
+      <div class="compact-grid">
+        <section id="admin-houses" class="admin-section card">
+          <div class="card-header"><div><h3>Manage Houses</h3><div class="card-sub">Edit house name, color, motto, and logo path. Saving pushes directly to Firebase.</div></div></div>
+          <div class="updates-list">
+            ${state.data.houses.map(h=>`
+              <div class="update-item">
+                <div class="form-grid">
+                  ${field('House Name', `<input value="${escapeAttr(h.name)}" onchange="updateHouseField('${h.id}','name',this.value)">`)}
+                  ${field('Primary Color', `<input value="${escapeAttr(h.color)}" onchange="updateHouseField('${h.id}','color',this.value)">`)}
+                  ${field('Motto', `<input value="${escapeAttr(h.motto)}" onchange="updateHouseField('${h.id}','motto',this.value)">`)}
+                  ${field('Logo Path', `<input value="${escapeAttr(h.logo)}" onchange="updateHouseField('${h.id}','logo',this.value)">`)}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        <section id="admin-sports" class="admin-section card">
+          <div class="card-header"><div><h3>Manage Sports</h3><div class="card-sub">Edit the sports displayed on the public website.</div></div></div>
+          <div class="updates-list">
+            ${state.data.sports.map(s=>`
+              <div class="update-item">
+                <div class="form-grid">
+                  ${field('Sport Name', `<input value="${escapeAttr(s.name)}" onchange="updateSportField('${s.id}','name',this.value)">`)}
+                  ${field('Icon', `<input value="${escapeAttr(s.icon)}" onchange="updateSportField('${s.id}','icon',this.value)">`)}
+                  ${field('Description', `<input value="${escapeAttr(s.description)}" onchange="updateSportField('${s.id}','description',this.value)">`)}
+                  ${field('Display Order', `<input type="number" value="${s.order}" onchange="updateSportField('${s.id}','order',this.value)">`)}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        <section id="admin-matches" class="admin-section card">
+          <div class="section-toolbar">
+            <div>
+              <h3 style="margin:0">Manage Match Results</h3>
+              <div class="card-sub">Leave the status empty until the match is ready to appear publicly.</div>
+            </div>
+            <input class="search-input" placeholder="Search matches..." value="${state.matchFilter || ''}" oninput="setMatchFilter(this.value)">
+          </div>
+          <div class="admin-form-card">
+            <div class="form-grid">
+              ${field('Sport', `<select id="matchSport">${sportOptions(true)}</select>`)}
+              ${field('Match Title', `<input id="matchTitle" placeholder="Example: Football Semi Final">`)}
+              ${field('House A', `<select id="matchHouseA">${houseOptions(true)}</select>`)}
+              ${field('House B', `<select id="matchHouseB">${houseOptions(true)}</select>`)}
+              ${field('Score A', `<input id="matchScoreA" type="number" placeholder="0">`)}
+              ${field('Score B', `<input id="matchScoreB" type="number" placeholder="0">`)}
+              ${field('Winner', `<select id="matchWinner">${houseOptions(true)}</select>`)}
+              ${field('Date', `<input id="matchDate" type="date">`)}
+              ${field('Status', `<select id="matchStatus"><option value="" selected>-- Select status --</option><option value="Scheduled">Scheduled</option><option value="Ongoing">Ongoing</option><option value="Completed">Completed</option></select>`)}
+            </div>
+            ${field('Match Details', `<textarea id="matchDetails" placeholder="Short match summary or notes"></textarea>`)}
+            <div class="soft-note">Tip: keep match status empty until you want it to show on the website.</div>
+            <div class="toolbar-actions" style="margin-top:12px">
+              <button id="matchSaveBtn" class="btn" onclick="addMatch()">Save Match</button>
+              <button id="matchCancelBtn" class="btn ghost" style="display:none" onclick="resetMatchForm()">Cancel Edit</button>
+            </div>
+          </div>
+          <div class="updates-list">
+            ${matchRows.map(m=>`
+              <div class="update-item">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap">
+                  <div>
+                    <strong>${escapeHtml(m.title)}</strong> <span class="small-note">${fmtDate(m.date)}</span>
+                    <div class="inline-meta">
+                      <span class="chip">${escapeHtml(sportById(m.sportId)?.name || m.sportId)}</span>
+                      <span class="chip">${escapeHtml(houseLabel(m.houseA))} ${safeScore(m.scoreA)} - ${safeScore(m.scoreB)} ${escapeHtml(houseLabel(m.houseB))}</span>
+                      <span class="badge ${(m.status || '').toLowerCase().replace(' ','-') || 'not-started'}">${m.status || 'Hidden'}</span>
+                    </div>
+                    ${m.details ? `<div class="small-note" style="margin-top:10px">${escapeHtml(m.details)}</div>` : ''}
+                  </div>
+                  <div class="record-actions">
+                    <button class="btn ghost" onclick="editMatch('${m.id}')">Edit</button>
+                    <button class="btn secondary" onclick="deleteMatch('${m.id}')">Delete</button>
+                  </div>
+                </div>
+              </div>
+            `).join('') || '<div class="empty-inline">No matches found for this filter.</div>'}
+          </div>
+        </section>
+
+        <section id="admin-standings" class="admin-section card">
+          <div class="section-toolbar">
+            <div>
+              <h3 style="margin:0">Manage Sport Standings</h3>
+              <div class="card-sub">Add standings only when a sport officially starts.</div>
+            </div>
+            <input class="search-input" placeholder="Search standings..." value="${state.standingFilter || ''}" oninput="setStandingFilter(this.value)">
+          </div>
+          <div class="admin-form-card">
+            <div class="form-grid">
+              ${field('Sport', `<select id="standingSport">${sportOptions(true)}</select>`)}
+              ${field('House', `<select id="standingHouse">${houseOptions(true)}</select>`)}
+              ${field('Played', `<input id="standingPlayed" type="number" placeholder="0">`)}
+              ${field('Won', `<input id="standingWon" type="number" placeholder="0">`)}
+              ${field('Lost', `<input id="standingLost" type="number" placeholder="0">`)}
+              ${field('Draw', `<input id="standingDraw" type="number" placeholder="0">`)}
+              ${field('Sport Points', `<input id="standingPoints" type="number" placeholder="0">`)}
+              ${field('Sport Rank', `<input id="standingRank" type="number" placeholder="1">`)}
+              ${field('Leaderboard Points', `<input id="standingLeaderboardPoints" type="number" placeholder="0">`)}
+              ${field('Status', `<select id="standingStatus"><option value="" selected>-- Select status --</option><option value="Ongoing">Ongoing</option><option value="Completed">Completed</option></select>`)}
+            </div>
+            ${field('Notes', `<textarea id="standingNotes" placeholder="Notes, summary, or current status"></textarea>`)}
+            <div class="soft-note">If no sport data exists, the public page stays <strong>Not Started Yet</strong>. Add standings with <strong>Ongoing</strong> or <strong>Completed</strong> only when the sport begins.</div>
+            <div class="toolbar-actions" style="margin-top:12px">
+              <button id="standingSaveBtn" class="btn" onclick="saveStanding()">Save Standing</button>
+              <button id="standingCancelBtn" class="btn ghost" style="display:none" onclick="resetStandingForm()">Cancel Edit</button>
+            </div>
+          </div>
+          <div class="updates-list">
+            ${standingRows.map(row=>`
+              <div class="update-item">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap">
+                  <div>
+                    <strong>${escapeHtml(sportById(row.sportId)?.name || row.sportId)}</strong> — ${escapeHtml(houseLabel(row.houseId))}
+                    <div class="inline-meta">
+                      <span class="chip">Played ${row.played}</span>
+                      <span class="chip">Won ${row.won}</span>
+                      <span class="chip">Lost ${row.lost}</span>
+                      <span class="chip">Draw ${row.draw || 0}</span>
+                      <span class="chip">Points ${row.points}</span>
+                      <span class="chip">Rank #${row.rank}</span>
+                      <span class="chip">Leaderboard ${row.leaderboardPoints}</span>
+                      <span class="badge ${(row.status || '').toLowerCase().replace(' ','-') || 'not-started'}">${row.status || 'Hidden'}</span>
+                    </div>
+                    ${row.notes ? `<div class="small-note" style="margin-top:10px">${escapeHtml(row.notes)}</div>` : ''}
+                  </div>
+                  <div class="record-actions">
+                    <button class="btn ghost" onclick="editStanding('${row.sportId}','${row.houseId}')">Edit</button>
+                    <button class="btn secondary" onclick="deleteStanding('${row.sportId}','${row.houseId}')">Delete</button>
+                  </div>
+                </div>
+              </div>
+            `).join('') || '<div class="empty-inline">No standings found for this filter.</div>'}
+          </div>
+        </section>
+
+        <section id="admin-leaderboard" class="admin-section card">
+          <div class="card-header"><div><h3>Overall Leaderboard</h3><div class="card-sub">Automatically calculated from standings data.</div></div></div>
+          <div class="table-shell">
+            <table>
+              <thead><tr><th>Rank</th><th>House</th><th>Total Points</th><th>Completed Entries</th></tr></thead>
+              <tbody>${computeLeaderboard().map(row=>`<tr><td>#${row.rank}</td><td>${row.name}</td><td>${row.total}</td><td>${row.completedSports}</td></tr>`).join('')}</tbody>
+            </table>
+          </div>
+          <p class="small-note" style="margin-top:14px">To change totals, edit leaderboard points awarded inside sport standings.</p>
+        </section>
+
+        <section id="admin-updates" class="admin-section card">
+          <div class="section-toolbar">
+            <div>
+              <h3 style="margin:0">Recent Updates / Announcements</h3>
+              <div class="card-sub">Publish homepage news cards.</div>
+            </div>
+            <input class="search-input" placeholder="Search announcements..." value="${state.updateFilter || ''}" oninput="setUpdateFilter(this.value)">
+          </div>
+          <div class="admin-form-card">
+            <div class="form-grid">
+              ${field('Update Title', `<input id="updateTitle" placeholder="Example: Football fixtures announced">`)}
+              ${field('Date', `<input id="updateDate" type="date">`)}
+            </div>
+            ${field('Content', `<textarea id="updateContent" placeholder="Write the update here"></textarea>`)}
+            <div class="toolbar-actions" style="margin-top:12px">
+              <button id="updateSaveBtn" class="btn" onclick="addUpdate()">Add Update</button>
+              <button id="updateCancelBtn" class="btn ghost" style="display:none" onclick="resetUpdateForm()">Cancel Edit</button>
+            </div>
+          </div>
+          <div class="updates-list">
+            ${updateRows.map(u=>`
+              <div class="update-item">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap">
+                  <div>
+                    <strong>${escapeHtml(u.title)}</strong>
+                    <div class="small-note" style="margin:8px 0">${fmtDate(u.date)}</div>
+                    <div style="color:#dbe6f7">${escapeHtml(u.content)}</div>
+                  </div>
+                  <div class="record-actions">
+                    <button class="btn ghost" onclick="editUpdate('${u.id}')">Edit</button>
+                    <button class="btn secondary" onclick="deleteUpdate('${u.id}')">Delete</button>
+                  </div>
+                </div>
+              </div>
+            `).join('') || '<div class="empty-inline">No announcements found for this filter.</div>'}
+          </div>
+        </section>
+
+        <section id="admin-playerstats" class="admin-section card">
+          ${renderAdminPlayerStats()}
+        </section>
+      </div>
+    </div>
+  `;
+}
+function handleAdminLogin(){
+  const username = document.getElementById('adminUser').value.trim();
+  const password = document.getElementById('adminPass').value.trim();
+  if(username === state.data.admin.username && password === state.data.admin.password){
+    localStorage.setItem(AUTH_KEY, 'true');
+    render();
+    notify('Admin login successful.', 'success');
+  } else notify('Invalid admin login credentials.', 'error');
+}
+function logoutAdmin(){ localStorage.removeItem(AUTH_KEY); render(); notify('Logged out from admin dashboard.', 'info'); }
+async function updateHouseField(id, key, value){
+  const next = normalizeData(state.data);
+  const house = next.houses.find(h => h.id === id);
+  if(house){ house[key] = value; await persistData(next); notify('House updated successfully.', 'success'); }
+}
+async function updateSportField(id, key, value){
+  const next = normalizeData(state.data);
+  const sport = next.sports.find(s => s.id === id);
+  if(sport){ sport[key] = key === 'order' ? Number(value) : value; await persistData(next); buildSportLinks(); render(); notify('Sport updated successfully.', 'success'); }
+}
+
+async function addMatch(){
+  const sportId = val('matchSport');
+  const title = val('matchTitle');
+  const houseA = val('matchHouseA');
+  const houseB = val('matchHouseB');
+  if(!sportId || !title || !houseA || !houseB) return notify('Please complete sport, title, and both houses.', 'error');
+  if(houseA === houseB) return notify('Choose two different houses.', 'error');
+  const next = normalizeData(state.data);
+  const payload = {
+    id: state.editingMatchId || crypto.randomUUID(),
+    sportId,
+    title,
+    houseA,
+    houseB,
+    scoreA: val('matchScoreA'),
+    scoreB: val('matchScoreB'),
+    winner: val('matchWinner'),
+    status: val('matchStatus') || '',
+    details: val('matchDetails'),
+    date: val('matchDate') || new Date().toISOString().slice(0,10)
+  };
+  const existing = next.matches.findIndex(m => m.id === payload.id);
+  if(existing >= 0) next.matches[existing] = payload; else next.matches.push(payload);
+  await persistData(next);
+  resetMatchForm();
+  notify(existing >= 0 ? 'Match updated successfully.' : 'Match added successfully.', 'success');
+}
+async function deleteMatch(id){
+  if(!confirmAction('Delete this match result?')) return;
+  const next = normalizeData(state.data);
+  next.matches = next.matches.filter(m => m.id !== id);
+  await persistData(next);
+  if(state.editingMatchId === id) resetMatchForm();
+  notify('Match deleted.', 'success');
+}
+async function saveStanding(){
+  const row = {
+    sportId: val('standingSport'),
+    houseId: val('standingHouse'),
+    played: Number(val('standingPlayed') || 0),
+    won: Number(val('standingWon') || 0),
+    lost: Number(val('standingLost') || 0),
+    draw: Number(val('standingDraw') || 0),
+    points: Number(val('standingPoints') || 0),
+    rank: Number(val('standingRank') || 0),
+    leaderboardPoints: Number(val('standingLeaderboardPoints') || 0),
+    notes: val('standingNotes'),
+    status: val('standingStatus')
+  };
+  if(!row.sportId || !row.houseId) return notify('Select sport and house.', 'error');
+  if(!row.status) return notify('Select a status before saving. Leave the sport without standings until it starts.', 'error');
+  const next = normalizeData(state.data);
+  const existing = next.standings.findIndex(s => s.sportId === row.sportId && s.houseId === row.houseId);
+  if(existing >= 0) next.standings[existing] = row; else next.standings.push(row);
+  await persistData(next);
+  resetStandingForm();
+  notify(existing >= 0 ? 'Standing updated successfully.' : 'Standing saved successfully.', 'success');
+}
+async function deleteStanding(sportId, houseId){
+  if(!confirmAction('Delete this standing row?')) return;
+  const next = normalizeData(state.data);
+  next.standings = next.standings.filter(s => !(s.sportId === sportId && s.houseId === houseId));
+  await persistData(next);
+  if(state.editingStandingKey === `${sportId}__${houseId}`) resetStandingForm();
+  notify('Standing deleted.', 'success');
+}
+async function addUpdate(){
+  const title = val('updateTitle');
+  const content = val('updateContent');
+  if(!title || !content) return notify('Please enter title and content.', 'error');
+  const next = normalizeData(state.data);
+  const payload = { id: state.editingUpdateId || crypto.randomUUID(), title, content, date: val('updateDate') || new Date().toISOString().slice(0,10) };
+  const existing = next.updates.findIndex(u => u.id === payload.id);
+  if(existing >= 0) next.updates[existing] = payload; else next.updates.unshift(payload);
+  await persistData(next);
+  resetUpdateForm();
+  notify(existing >= 0 ? 'Announcement updated successfully.' : 'Announcement added successfully.', 'success');
+}
+async function deleteUpdate(id){
+  if(!confirmAction('Delete this announcement?')) return;
+  const next = normalizeData(state.data);
+  next.updates = next.updates.filter(u => u.id !== id);
+  await persistData(next);
+  if(state.editingUpdateId === id) resetUpdateForm();
+  notify('Announcement deleted.', 'success');
+}
+function val(id){ return document.getElementById(id)?.value?.trim(); }
+function safeScore(v){ return v === '' || v === undefined || v === null ? DASH : v; }
+function field(label, control){ return `<div class="field"><label>${label}</label>${control}</div>`; }
+function parseRoute(){ const raw = (location.hash || '#home').replace('#',''); if(raw.startsWith('sport/')) return { route:'sport', params: raw.split('/')[1] }; return { route: raw || 'home', params: null }; }
+function render(){
+  buildMiniHouses();
+  buildSportLinks();
+  setActiveNav();
+  destroyCharts();
+  const parsed = parseRoute();
+  state.route = parsed.route;
+  state.params = parsed.params;
+  const view = document.getElementById('appView');
+  if(state.loading) view.innerHTML = renderLoading();
+  else if(state.route === 'leaderboard') view.innerHTML = renderLeaderboard();
+  else if(state.route === 'results') view.innerHTML = renderResults();
+  else if(state.route === 'charts') { view.innerHTML = renderCharts(); setTimeout(mountCharts, 10); }
+  else if(state.route === 'sport') view.innerHTML = renderSportPage(state.params);
+  else if(state.route === 'admin') view.innerHTML = renderAdmin();
+  else view.innerHTML = renderHome();
+  setActiveNav();
+  syncConnectionPill();
+  if(state.route === 'admin') showAdminSection(state.adminView || 'houses');
+}
+function hexToRgba(hex, alpha){
+  const c = (hex || '#999999').replace('#','');
+  const bigint = parseInt(c,16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// ── Missing utility functions ──
+function notify(msg, type = 'info'){
+  const wrap = document.getElementById('toastWrap');
+  if(!wrap) return;
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3200);
+}
+function confirmAction(msg){ return confirm(msg); }
+function houseOptions(includeEmpty){
+  let html = includeEmpty ? '<option value="">-- Select house --</option>' : '';
+  state.data.houses.forEach(h => { html += `<option value="${h.id}">${escapeHtml(h.name)}</option>`; });
+  return html;
+}
+function sportOptions(includeEmpty){
+  let html = includeEmpty ? '<option value="">-- Select sport --</option>' : '';
+  sortedSports().forEach(s => { html += `<option value="${s.id}">${escapeHtml(s.name)}</option>`; });
+  return html;
+}
+function showAdminSection(name){
+  state.adminView = name;
+  document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById('admin-' + name);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.admin-nav .btn').forEach(btn => {
+    const isActive = btn.textContent.toLowerCase().includes(name.replace('playerstats','player stats'));
+    btn.className = 'btn' + (isActive ? '' : ' secondary');
+  });
+}
+function setMatchFilter(v){ state.matchFilter = v.toLowerCase(); render(); }
+function setStandingFilter(v){ state.standingFilter = v.toLowerCase(); render(); }
+function setUpdateFilter(v){ state.updateFilter = v.toLowerCase(); render(); }
+
+function editMatch(id){
+  const m = state.data.matches.find(x => x.id === id);
+  if(!m) return;
+  state.editingMatchId = id;
+  render();
+  setTimeout(() => {
+    const el = (i) => document.getElementById(i);
+    if(el('matchSport')) el('matchSport').value = m.sportId || '';
+    if(el('matchTitle')) el('matchTitle').value = m.title || '';
+    if(el('matchHouseA')) el('matchHouseA').value = m.houseA || '';
+    if(el('matchHouseB')) el('matchHouseB').value = m.houseB || '';
+    if(el('matchScoreA')) el('matchScoreA').value = m.scoreA ?? '';
+    if(el('matchScoreB')) el('matchScoreB').value = m.scoreB ?? '';
+    if(el('matchWinner')) el('matchWinner').value = m.winner || '';
+    if(el('matchDate')) el('matchDate').value = m.date || '';
+    if(el('matchStatus')) el('matchStatus').value = m.status || '';
+    if(el('matchDetails')) el('matchDetails').value = m.details || '';
+    const saveBtn = el('matchSaveBtn');
+    const cancelBtn = el('matchCancelBtn');
+    if(saveBtn) saveBtn.textContent = 'Update Match';
+    if(cancelBtn) cancelBtn.style.display = '';
+  }, 20);
+}
+function resetMatchForm(){
+  state.editingMatchId = null;
+  render();
+}
+function editStanding(sportId, houseId){
+  const row = state.data.standings.find(s => s.sportId === sportId && s.houseId === houseId);
+  if(!row) return;
+  state.editingStandingKey = `${sportId}__${houseId}`;
+  render();
+  setTimeout(() => {
+    const el = (i) => document.getElementById(i);
+    if(el('standingSport')) el('standingSport').value = row.sportId || '';
+    if(el('standingHouse')) el('standingHouse').value = row.houseId || '';
+    if(el('standingPlayed')) el('standingPlayed').value = row.played ?? '';
+    if(el('standingWon')) el('standingWon').value = row.won ?? '';
+    if(el('standingLost')) el('standingLost').value = row.lost ?? '';
+    if(el('standingDraw')) el('standingDraw').value = row.draw ?? '';
+    if(el('standingPoints')) el('standingPoints').value = row.points ?? '';
+    if(el('standingRank')) el('standingRank').value = row.rank ?? '';
+    if(el('standingLeaderboardPoints')) el('standingLeaderboardPoints').value = row.leaderboardPoints ?? '';
+    if(el('standingStatus')) el('standingStatus').value = row.status || '';
+    if(el('standingNotes')) el('standingNotes').value = row.notes || '';
+    const saveBtn = el('standingSaveBtn');
+    const cancelBtn = el('standingCancelBtn');
+    if(saveBtn) saveBtn.textContent = 'Update Standing';
+    if(cancelBtn) cancelBtn.style.display = '';
+  }, 20);
+}
+function resetStandingForm(){
+  state.editingStandingKey = null;
+  render();
+}
+function editUpdate(id){
+  const u = state.data.updates.find(x => x.id === id);
+  if(!u) return;
+  state.editingUpdateId = id;
+  render();
+  setTimeout(() => {
+    const el = (i) => document.getElementById(i);
+    if(el('updateTitle')) el('updateTitle').value = u.title || '';
+    if(el('updateDate')) el('updateDate').value = u.date || '';
+    if(el('updateContent')) el('updateContent').value = u.content || '';
+    const saveBtn = el('updateSaveBtn');
+    const cancelBtn = el('updateCancelBtn');
+    if(saveBtn) saveBtn.textContent = 'Update Announcement';
+    if(cancelBtn) cancelBtn.style.display = '';
+  }, 20);
+}
+function resetUpdateForm(){
+  state.editingUpdateId = null;
+  render();
+}
+
+// ── Player Stats helper functions ──
+function getPlayerStatsEntry(sportId, houseId){
+  return state.data.playerStats.find(e => e.sportId === sportId && e.houseId === houseId);
+}
+function getSportPlayerStats(sportId){
+  return state.data.playerStats.filter(e => e.sportId === sportId);
+}
+function setPsSport(v){ state.psSelectedSport = v; state.psEditingIndex = -1; render(); }
+function setPsHouse(v){ state.psSelectedHouse = v; state.psEditingIndex = -1; render(); }
+
+async function savePlayerEntry(){
+  const sportId = state.psSelectedSport;
+  const houseId = state.psSelectedHouse;
+  if(!sportId || !houseId) return notify('Select sport and house first.', 'error');
+  const config = SPORT_FIELDS[sportId];
+  if(!config) return notify('No field config for this sport.', 'error');
+  const nameVal = val('psPlayerName');
+  if(!nameVal) return notify('Enter a player/pair name.', 'error');
+  const player = { name: nameVal };
+  config.fields.forEach(f => { player[f.key] = Number(val('psField_' + f.key) || 0); });
+  const next = normalizeData(state.data);
+  let entry = next.playerStats.find(e => e.sportId === sportId && e.houseId === houseId);
+  if(!entry){
+    entry = { sportId, houseId, players: [], teamScore: null };
+    next.playerStats.push(entry);
+  }
+  if(state.psEditingIndex >= 0 && state.psEditingIndex < entry.players.length){
+    entry.players[state.psEditingIndex] = player;
+    state.psEditingIndex = -1;
+    notify('Player updated.', 'success');
+  } else {
+    entry.players.push(player);
+    notify('Player added.', 'success');
+  }
+  await persistData(next);
+}
+
+async function deletePlayerEntry(sportId, houseId, index){
+  if(!confirmAction('Remove this player entry?')) return;
+  const next = normalizeData(state.data);
+  const entry = next.playerStats.find(e => e.sportId === sportId && e.houseId === houseId);
+  if(entry && entry.players[index] !== undefined){
+    entry.players.splice(index, 1);
+    if(entry.players.length === 0 && !entry.teamScore) next.playerStats = next.playerStats.filter(e => !(e.sportId === sportId && e.houseId === houseId));
+    await persistData(next);
+    if(state.psEditingIndex === index) state.psEditingIndex = -1;
+    notify('Player removed.', 'success');
+  }
+}
+
+function editPlayerEntry(index){
+  state.psEditingIndex = index;
+  const sportId = state.psSelectedSport;
+  const houseId = state.psSelectedHouse;
+  render();
+  setTimeout(() => {
+    const entry = getPlayerStatsEntry(sportId, houseId);
+    if(!entry || !entry.players[index]) return;
+    const p = entry.players[index];
+    const config = SPORT_FIELDS[sportId];
+    const el = (i) => document.getElementById(i);
+    if(el('psPlayerName')) el('psPlayerName').value = p.name || '';
+    config.fields.forEach(f => { if(el('psField_'+f.key)) el('psField_'+f.key).value = p[f.key] ?? 0; });
+  }, 20);
+}
+
+function cancelPsEdit(){ state.psEditingIndex = -1; render(); }
+
+async function saveTeamScore(){
+  const sportId = state.psSelectedSport;
+  const houseId = state.psSelectedHouse;
+  if(!sportId || !houseId) return;
+  const score = Number(val('psTeamScore') || 0);
+  const next = normalizeData(state.data);
+  let entry = next.playerStats.find(e => e.sportId === sportId && e.houseId === houseId);
+  if(!entry){
+    entry = { sportId, houseId, players: [], teamScore: score };
+    next.playerStats.push(entry);
+  } else {
+    entry.teamScore = score;
+  }
+  await persistData(next);
+  notify('Team score saved.', 'success');
+}
+
+// ── Player Stats rendering for sport pages ──
+function renderPlayerStatsForSport(sportId){
+  const config = SPORT_FIELDS[sportId];
+  if(!config) return '';
+  const allStats = getSportPlayerStats(sportId);
+  if(!allStats.length){
+    return `
+      <div class="section-title"><div><h3>🏅 Player Stats</h3><p>Individual player performance tracking for this sport.</p></div></div>
+      <div class="stats-placeholder">
+        <div class="ph-icon">📊</div>
+        <h4>No Player Stats Recorded Yet</h4>
+        <p>Player performance data will appear here once the admin adds player stats for this sport.</p>
+      </div>`;
+  }
+  let html = `<div class="section-title"><div><h3>🏅 Player Stats</h3><p>Individual player performance tracking</p></div></div>`;
+  state.data.houses.forEach(house => {
+    const entry = allStats.find(e => e.houseId === house.id);
+    if(!entry || (!entry.players.length && !(config.hasTeamScore && entry.teamScore != null))) return;
+    html += `<div class="player-stats-block" style="border-color:${hexToRgba(house.color,.25)}">
+      <div class="house-header">
+        <img src="${escapeAttr(house.logo)}" alt="${escapeAttr(house.name)}">
+        <h4 style="color:${house.color}">${escapeHtml(house.name)}</h4>
+      </div>`;
+    if(config.hasTeamScore && entry.teamScore != null){
+      html += `<div class="team-score-badge">🏆 Team Score: ${entry.teamScore}</div>`;
+    }
+    html += entry.players.length ? `<div class="table-shell"><table>
+      <thead><tr><th>${escapeHtml(config.label)}</th>${config.fields.map(f=>`<th>${escapeHtml(f.label)}</th>`).join('')}</tr></thead>
+      <tbody>${entry.players.map(p => `<tr><td><strong>${escapeHtml(p.name)}</strong></td>${config.fields.map(f=>`<td>${p[f.key] ?? 0}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table></div>` : `<div class="empty-inline">No individual entries added for this house yet.</div>`;
+    html += `</div>`;
+  });
+  return html;
+}
+
+// ── Admin Player Stats section rendering ──
+function renderAdminPlayerStats(){
+  const sportId = state.psSelectedSport;
+  const houseId = state.psSelectedHouse;
+  const config = sportId ? SPORT_FIELDS[sportId] : null;
+  const entry = (sportId && houseId) ? getPlayerStatsEntry(sportId, houseId) : null;
+  const players = entry ? entry.players : [];
+  const isEditing = state.psEditingIndex >= 0;
+
+  let formHtml = '';
+  if(sportId && houseId && config){
+    if(config.hasTeamScore){
+      formHtml += `<div class="ps-form-row" style="margin-bottom:16px">
+        <div class="field" style="max-width:220px"><label>Team Score</label><input id="psTeamScore" type="number" placeholder="0" value="${entry?.teamScore ?? ''}"></div>
+        <div style="padding-top:24px"><button class="btn" onclick="saveTeamScore()">Save Team Score</button></div>
+      </div>`;
+    }
+    formHtml += `<div class="admin-form-card">
+      <div style="font-weight:700;margin-bottom:10px">${isEditing ? '✏️ Edit' : '➕ Add'} ${config.label}</div>
+      <div class="ps-form-row">
+        <div class="field"><label>${config.label} Name</label><input id="psPlayerName" placeholder="Enter name"></div>
+        ${config.fields.map(f => `<div class="field"><label>${f.label}</label><input id="psField_${f.key}" type="number" placeholder="0"></div>`).join('')}
+      </div>
+      <div class="toolbar-actions">
+        <button class="btn" onclick="savePlayerEntry()">${isEditing ? 'Update' : 'Add'} ${config.label}</button>
+        ${isEditing ? '<button class="btn ghost" onclick="cancelPsEdit()">Cancel Edit</button>' : ''}
+      </div>
+    </div>`;
+    if(players.length){
+      formHtml += `<div style="margin-top:14px">`;
+      players.forEach((p, i) => {
+        formHtml += `<div class="player-row">
+          <div class="p-name">${escapeHtml(p.name)}</div>
+          <div class="p-stats">${config.fields.map(f=>`<span>${f.label}: <strong>${p[f.key]??0}</strong></span>`).join('')}</div>
+          <div class="p-actions">
+            <button class="btn ghost" onclick="editPlayerEntry(${i})">Edit</button>
+            <button class="btn secondary" onclick="deletePlayerEntry('${sportId}','${houseId}',${i})">Del</button>
+          </div>
+        </div>`;
+      });
+      formHtml += `</div>`;
+    } else {
+      formHtml += `<div class="empty-inline" style="margin-top:14px">No players added yet for this house.</div>`;
+    }
+  } else if(sportId && !houseId){
+    formHtml = `<div class="soft-note">Select a house to manage player stats.</div>`;
+  } else {
+    formHtml = `<div class="soft-note">Select a sport and house to start adding player performance data.</div>`;
+  }
+
+  return `
+    <div class="card-header"><div><h3>Manage Player Stats</h3><div class="card-sub">Add player names and sport-specific performance data per house.</div></div></div>
+    <div class="form-grid" style="margin-bottom:16px">
+      ${field('Sport', `<select id="psSportSelect" onchange="setPsSport(this.value)"><option value="">-- Select sport --</option>${sortedSports().map(s=>`<option value="${s.id}" ${s.id===sportId?'selected':''}>${escapeHtml(s.name)}</option>`).join('')}</select>`)}
+      ${field('House', `<select id="psHouseSelect" onchange="setPsHouse(this.value)"><option value="">-- Select house --</option>${state.data.houses.map(h=>`<option value="${h.id}" ${h.id===houseId?'selected':''}>${escapeHtml(h.name)}</option>`).join('')}</select>`)}
+    </div>
+    ${formHtml}
+  `;
+}
+
+Object.assign(window, { render, handleAdminLogin, logoutAdmin, showAdminSection, updateHouseField, updateSportField, addMatch, deleteMatch, saveStanding, deleteStanding, addUpdate, deleteUpdate, editMatch, editStanding, editUpdate, resetMatchForm, resetStandingForm, resetUpdateForm, setMatchFilter, setStandingFilter, setUpdateFilter, savePlayerEntry, deletePlayerEntry, editPlayerEntry, cancelPsEdit, saveTeamScore, setPsSport, setPsHouse });
+window.addEventListener('hashchange', render);
+window.addEventListener('DOMContentLoaded', () => { render(); initFirebaseSync(); });
+</script>
+
+</body>
+</html>
