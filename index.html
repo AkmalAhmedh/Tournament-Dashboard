@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inter-House Sports Tournament</title>
+  <link rel="icon" type="image/png" href="assets/site-logo-web.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -36,10 +37,12 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     img{max-width:100%;display:block}
     .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
     .sidebar{position:sticky;top:0;height:100vh;padding:24px;border-right:1px solid var(--border);background:rgba(8,10,14,.85);backdrop-filter:blur(18px);overflow:auto}
-    .brand{display:flex;gap:14px;align-items:center;margin-bottom:28px}
-    .brand-badge{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#132132,#0b0f15);display:grid;place-items:center;border:1px solid var(--border);box-shadow:var(--shadow);font-weight:900}
-    .brand h1{font-size:1rem;margin:0}
-    .brand p{margin:4px 0 0;color:var(--muted);font-size:.86rem}
+    .brand{display:grid;gap:12px;align-items:center;margin-bottom:24px;padding:14px;border-radius:20px;background:linear-gradient(180deg,rgba(18,23,31,.96),rgba(11,15,21,.92));border:1px solid rgba(255,255,255,.08)}
+    .brand-mark{display:grid;place-items:center;min-height:98px;padding:10px;border-radius:18px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);overflow:hidden}
+    .brand-mark::after{display:none}
+    .brand-mark img{width:min(100%,210px);max-height:84px;object-fit:contain}
+    .brand-copy h1{margin:0;font-size:1.08rem;line-height:1.05;letter-spacing:.02em}
+    .brand-copy p{margin:6px 0 0;color:var(--muted);font-size:.88rem;line-height:1.35}
     .nav{display:grid;gap:8px}
     .nav a{padding:13px 14px;border-radius:14px;color:#dce6f8;font-weight:600;border:1px solid transparent;transition:.2s ease}
     .nav a:hover,.nav a.active{background:linear-gradient(135deg,#151c27,#0f141c);border-color:var(--border)}
@@ -55,33 +58,35 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     .btn{border:none;background:linear-gradient(135deg,#1e2f45,#0e1724);color:#eef3ff;padding:12px 16px;border-radius:14px;font-weight:700;cursor:pointer;border:1px solid var(--border);transition:.2s ease}
     .btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.18)}
     .btn.secondary{background:transparent}
-    .hero{position:relative;overflow:hidden;padding:28px;border-radius:30px;background:linear-gradient(140deg,rgba(20,27,37,.95),rgba(9,12,18,.95));border:1px solid var(--border);box-shadow:var(--shadow)}
-    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(18,116,219,.18),transparent 22%),radial-gradient(circle at 70% 10%,rgba(212,167,44,.14),transparent 20%),radial-gradient(circle at 80% 80%,rgba(118,200,27,.14),transparent 18%),radial-gradient(circle at 20% 90%,rgba(143,32,54,.14),transparent 16%);pointer-events:none}
-    .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center}
+    .hero{position:relative;overflow:hidden;padding:24px;border-radius:24px;background:linear-gradient(180deg,rgba(18,24,33,.96),rgba(10,14,20,.96));border:1px solid var(--border);box-shadow:var(--shadow)}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(138,180,255,.04),transparent 40%);pointer-events:none}
+    .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:18px;align-items:start}
     .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#0e1521;border:1px solid var(--border);color:#b9c8e5;font-size:.83rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
-    .hero h3{font-size:clamp(2rem,4.8vw,4rem);margin:18px 0 12px;line-height:1.02}
-    .hero p{font-size:1.05rem;color:#b9c4d7;max-width:760px}
+    .hero h3{font-size:clamp(2rem,4vw,3.2rem);margin:16px 0 10px;line-height:1.08}
+    .hero p{font-size:1rem;color:#b9c4d7;max-width:760px}
     .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
-    .stat{padding:16px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid var(--border)}
+    .stat{padding:16px;border-radius:16px;background:rgba(255,255,255,.025);border:1px solid var(--border)}
     .stat .label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
     .stat .value{margin-top:8px;font-size:1.55rem;font-weight:800}
-    .hero-house-stack{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .hero-house-card{border-radius:26px;padding:14px;background:linear-gradient(180deg,#121824,#0d1017);border:1px solid var(--border);min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
-    .hero-house-card img{height:92px;object-fit:contain;margin-left:auto}
-    .hero-house-card h4{margin:8px 0 0;font-size:1rem}
+    .hero-house-stack{display:grid;gap:12px}
+    .hero-house-card{border-radius:18px;padding:14px;background:rgba(255,255,255,.025);border:1px solid var(--border);display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center}
+    .hero-house-card img{width:56px;height:56px;object-fit:contain}
+    .hero-house-card h4{margin:0;font-size:1rem}
     .grid{display:grid;gap:18px;margin-top:22px}
     .grid.cols-4{grid-template-columns:repeat(4,1fr)}
     .grid.cols-3{grid-template-columns:repeat(3,1fr)}
     .grid.cols-2{grid-template-columns:repeat(2,1fr)}
-    .card{background:linear-gradient(180deg,rgba(17,22,30,.96),rgba(12,16,23,.96));border:1px solid var(--border);border-radius:26px;padding:22px;box-shadow:var(--shadow)}
+    .card{background:linear-gradient(180deg,rgba(17,22,30,.96),rgba(12,16,23,.96));border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
     .card h3,.card h4{margin:0}
     .card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
     .card-sub{color:var(--muted);font-size:.95rem;margin-top:6px}
     .sports-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .sport-card{padding:18px;border-radius:22px;background:linear-gradient(180deg,#101722,#0b1017);border:1px solid var(--border);transition:.2s ease}
-    .sport-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.16)}
+    .sport-card{padding:18px;border-radius:18px;background:linear-gradient(180deg,#101722,#0b1017);border:1px solid var(--border);transition:border-color .2s ease, background .2s ease}
+    .sport-card:hover{border-color:rgba(255,255,255,.16);background:linear-gradient(180deg,#111a26,#0b1017)}
     .sport-card h4{margin:10px 0 8px}
     .sport-card p{margin:0;color:var(--muted);font-size:.95rem}
+    .sport-meta{display:grid;gap:8px;margin-top:14px}
+    .sport-meta-row{display:flex;justify-content:space-between;gap:12px;color:#d8e2f5;font-size:.92rem}
     .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;border:1px solid rgba(255,255,255,.08)}
     .badge.not-started{background:rgba(255,255,255,.06);color:#c4cfde}
     .badge.ongoing{background:rgba(18,116,219,.15);color:#8dc6ff}
@@ -96,7 +101,7 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     .house-rank-card h3{font-size:1.3rem;margin-bottom:6px}
     .house-rank-card .points{font-size:1.8rem;font-weight:900}
     .house-rank-card .meta{color:var(--muted);font-size:.92rem}
-    .podium{display:grid;gap:14px}
+    .podium{display:grid;gap:12px}
     .podium-item{padding:20px;border-radius:24px;border:1px solid var(--border);min-height:120px;display:flex;flex-direction:column;justify-content:space-between}
     .podium-item strong{font-size:1.4rem}
     .podium-item span{color:var(--muted)}
@@ -164,15 +169,23 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     .connection-pill{padding:10px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:.82rem;font-weight:700;color:#dfe9ff}
     .connection-pill.online{border-color:rgba(118,200,27,.28);background:rgba(118,200,27,.12);color:#b7ff86}
     .connection-pill.offline{border-color:rgba(255,140,140,.2);background:rgba(255,90,90,.08);color:#ffc4c4}
-    .sync-banner{margin-bottom:18px;padding:14px 16px;border-radius:18px;border:1px solid var(--border);background:linear-gradient(180deg,rgba(17,22,30,.9),rgba(12,16,23,.9));color:#c9d5ea}
+    .sync-banner{margin-bottom:18px;padding:12px 14px;border-radius:16px;border:1px solid var(--border);background:linear-gradient(180deg,rgba(17,22,30,.9),rgba(12,16,23,.9));color:#c9d5ea}
     .loading-shell{display:grid;place-items:center;min-height:55vh}
     .loading-shell .loader{width:54px;height:54px;border-radius:50%;border:4px solid rgba(255,255,255,.08);border-top-color:var(--accent);animation:spin 1s linear infinite;margin:0 auto 14px}
     @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes epicPulse{0%,100%{opacity:.6}50%{opacity:1}}
-    .hero::before{content:"";position:absolute;inset:-2px;border-radius:32px;background:conic-gradient(from 0deg,rgba(118,200,27,.12),rgba(212,167,44,.12),rgba(143,32,54,.12),rgba(18,116,219,.12),rgba(118,200,27,.12));z-index:0;filter:blur(20px);animation:epicPulse 6s ease-in-out infinite}
-    .sport-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(138,180,255,.08)}
+    .hero::before{display:none}
     .house-rank-card{transition:.2s ease}
-    .house-rank-card:hover{transform:translateX(4px);box-shadow:0 4px 24px rgba(0,0,0,.3)}
+    .house-rank-card:hover{border-color:rgba(255,255,255,.16)}
+    .overview-panel{display:grid;gap:12px}
+    .overview-item{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+    .overview-item strong{display:block;font-size:.82rem;text-transform:uppercase;letter-spacing:.12em;color:#9eb0cc;margin-bottom:8px}
+    .overview-item span{display:block;font-size:1.15rem;font-weight:700}
+    .simple-progress{height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;margin-top:10px}
+    .simple-progress-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,#8ab4ff,#d4a72c)}
+    .simple-list{display:grid;gap:10px}
+    .simple-list-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border:1px solid rgba(255,255,255,.07);border-radius:16px;background:rgba(255,255,255,.02)}
+    .simple-list-item strong{display:block;font-size:.98rem}
+    .simple-list-item span{color:var(--muted);font-size:.88rem}
     .player-stats-block{margin-top:18px;padding:20px;border-radius:22px;background:linear-gradient(180deg,rgba(17,22,30,.96),rgba(12,16,23,.96));border:1px solid var(--border)}
     .player-stats-block .house-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
     .player-stats-block .house-header img{width:38px;height:38px;object-fit:contain}
@@ -208,7 +221,7 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
       .topbar{flex-direction:column;align-items:flex-start}
       .hero{padding:20px}
       .hero-stats,.kpi-row{grid-template-columns:repeat(2,1fr)}
-      .sports-grid,.hero-house-stack,.house-mini-grid{grid-template-columns:1fr}
+      .sports-grid,.house-mini-grid{grid-template-columns:1fr}
       .form-grid{grid-template-columns:1fr}
       .house-rank-card{grid-template-columns:auto 80px 1fr;align-items:start}
       .house-rank-card .points{grid-column:1/-1}
@@ -220,11 +233,13 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
 <body>
   <div class="app">
     <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-badge">IH</div>
-        <div>
+      <div class="brand" id="brandPortal">
+        <div class="brand-mark">
+          <img src="assets/site-logo-web.png" alt="Inter-House Tournament logo">
+        </div>
+        <div class="brand-copy">
           <h1>Inter-House Tournament</h1>
-          <p>Simple, premium sports dashboard</p>
+          <p>Live standings, match tracking, and house performance in one hosted dashboard.</p>
         </div>
       </div>
 
@@ -237,11 +252,6 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
 
       <div class="nav-group-title">Sports</div>
       <div class="nav" id="sportLinks"></div>
-
-      <div class="nav-group-title">Admin</div>
-      <div class="nav">
-        <a href="#admin" data-route="admin">Dashboard</a>
-      </div>
 
       <div class="house-mini-grid" id="miniHouses"></div>
     </aside>
@@ -307,6 +317,7 @@ const DEFAULT_DATA = {
 const CACHE_KEY = 'inter_house_tournament_cache_v3';
 const AUTH_KEY = 'inter_house_admin_auth';
 const ROOT_PATH = 'tournamentData';
+const FIREBASE_BOOT_TIMEOUT_MS = 5000;
 
 const SPORT_FIELDS = {
   football: { label:'Player', fields:[
@@ -354,6 +365,7 @@ const state = {
   matchFilter: '',
   standingFilter: '',
   updateFilter: '',
+  brandTapCount: 0,
   psSelectedSport: '',
   psSelectedHouse: '',
   psEditingIndex: -1
@@ -400,6 +412,14 @@ function normalizeData(source){
 }
 
 async function initFirebaseSync(){
+  let settled = false;
+  const fallbackTimer = setTimeout(() => {
+    if(settled) return;
+    state.loading = false;
+    state.firebaseReady = false;
+    state.connectionMessage = 'Firebase is taking too long — showing cached data';
+    render();
+  }, FIREBASE_BOOT_TIMEOUT_MS);
   try {
     const snapshot = await get(rootRef);
     if(!snapshot.exists()){
@@ -408,6 +428,8 @@ async function initFirebaseSync(){
       state.data = structured(DEFAULT_DATA);
     }
     onValue(rootRef, (snap) => {
+      settled = true;
+      clearTimeout(fallbackTimer);
       state.data = normalizeData(snap.val() || DEFAULT_DATA);
       cacheData(state.data);
       state.loading = false;
@@ -415,12 +437,16 @@ async function initFirebaseSync(){
       state.connectionMessage = 'Firebase live sync connected';
       render();
     }, () => {
+      settled = true;
+      clearTimeout(fallbackTimer);
       state.loading = false;
       state.firebaseReady = false;
       state.connectionMessage = 'Firebase unavailable — showing cached data';
       render();
     });
   } catch (error) {
+    settled = true;
+    clearTimeout(fallbackTimer);
     console.error(error);
     state.loading = false;
     state.firebaseReady = false;
@@ -456,6 +482,10 @@ function fmtDate(d){ return d ? new Date(d).toLocaleDateString(undefined,{year:'
 function sortedSports(){ return [...state.data.sports].sort((a,b)=>a.order-b.order); }
 function houseLabel(id){ return houseById(id)?.name || id || 'TBD'; }
 function winnerLabel(id){ return houseById(id)?.name || id || 'Draw / TBC'; }
+function textPreview(value, max = 110){
+  const clean = String(value || '').trim();
+  return clean.length > max ? clean.slice(0, max - 1).trimEnd() + '…' : clean;
+}
 function getSportStandings(sportId){ return state.data.standings.filter(s => s.sportId === sportId).sort((a,b) => (a.rank || 99) - (b.rank || 99)); }
 function getSportMatches(sportId){ return state.data.matches.filter(m => m.sportId === sportId).sort((a,b)=> new Date(b.date)-new Date(a.date)); }
 function deriveSportStatus(sportId){
@@ -524,21 +554,23 @@ function renderBanner(){
   return `<div class="sync-banner">${state.firebaseReady ? 'Live Firebase sync is active. Public pages update automatically when admin data changes.' : 'Firebase is not connected right now. The site is showing cached browser data until the connection returns.'}</div>`;
 }
 function renderHome(){
-  updateTopbar('Tournament Home', 'Hero overview, house momentum, live sport status and recent updates.');
+  updateTopbar('Tournament Home', 'Clear standings, sport status, and latest updates.');
   const leaderboard = computeLeaderboard();
   const sports = sortedSports();
   const ongoing = sports.filter(s => deriveSportStatus(s.id) === 'Ongoing').length;
   const completed = sports.filter(s => deriveSportStatus(s.id) === 'Completed').length;
   const notStarted = sports.filter(s => deriveSportStatus(s.id) === 'Not Started Yet').length;
   const leader = leaderboard[0] || state.data.houses[0];
+  const progress = sports.length ? Math.round((completed / sports.length) * 100) : 0;
+  const latestUpdate = [...state.data.updates].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
   return `
     ${renderBanner()}
     <section class="hero">
       <div class="hero-grid">
         <div>
-          <span class="eyebrow">Inter-House Sports Tournament</span>
-          <h3>One competition. Four houses. Nine events. One live Firebase-powered leaderboard.</h3>
-          <p>A simple, beautiful, responsive sports tournament website with real-time updates for KDG, APEX, CARCHIEF, and TRANSWORLD.</p>
+          <span class="eyebrow">Inter-House Tournament</span>
+          <h3>Everything important, in one place.</h3>
+          <p>Check the overall leaderboard, current sport status, and latest match updates without digging through the admin data.</p>
           <div class="hero-stats">
             <div class="stat"><div class="label">Total Houses</div><div class="value">4</div></div>
             <div class="stat"><div class="label">Sports</div><div class="value">9</div></div>
@@ -546,16 +578,28 @@ function renderHome(){
             <div class="stat"><div class="label">Completed</div><div class="value">${completed}</div></div>
           </div>
         </div>
-        <div class="hero-house-stack">
-          ${leaderboard.slice(0,4).map(h => `
-            <div class="hero-house-card" style="background:linear-gradient(180deg,${hexToRgba(h.color,.20)},rgba(8,10,14,.9));border-color:${hexToRgba(h.color,.35)}">
-              <img src="${escapeAttr(h.logo)}" alt="${escapeAttr(h.name)}">
+        <div class="overview-panel">
+          <div class="overview-item">
+            <strong>Current Leader</strong>
+            <div class="hero-house-card" style="background:linear-gradient(180deg,${hexToRgba(leader.color,.16)},rgba(8,10,14,.9));border-color:${hexToRgba(leader.color,.28)}">
+              <img src="${escapeAttr(leader.logo)}" alt="${escapeAttr(leader.name)}">
               <div>
-                <h4>${escapeHtml(h.name)}</h4>
-                <div class="small-note">${h.total} leaderboard points</div>
+                <h4>${escapeHtml(leader.name)}</h4>
+                <div class="small-note">${leader.total || 0} total points</div>
               </div>
             </div>
-          `).join('')}
+          </div>
+          <div class="overview-item">
+            <strong>Tournament Progress</strong>
+            <span>${progress}% completed</span>
+            <div class="small-note">${completed} of ${sports.length} sports completed</div>
+            <div class="simple-progress"><div class="simple-progress-bar" style="width:${progress}%"></div></div>
+          </div>
+          <div class="overview-item">
+            <strong>Latest Update</strong>
+            <span>${escapeHtml(latestUpdate ? latestUpdate.title : 'No updates yet')}</span>
+            <div class="small-note">${escapeHtml(latestUpdate ? textPreview(latestUpdate.content, 90) : 'Announcements will appear here once they are published.')}</div>
+          </div>
         </div>
       </div>
     </section>
@@ -567,20 +611,22 @@ function renderHome(){
       <div class="card"><div class="card-header"><div><h3>Recent Updates</h3><div class="card-sub">Announcements published</div></div><span class="badge not-started">News</span></div><div style="font-size:2rem;font-weight:900">${state.data.updates.length}</div></div>
     </div>
 
-    <div class="section-title"><div><h3>Sports Overview</h3><p>Each event automatically shows Not Started Yet, Ongoing, or Completed based on Firebase data.</p></div></div>
+    <div class="section-title"><div><h3>Sports Overview</h3><p>Each sport shows its live status, current leader, and how much data is available.</p></div></div>
     <div class="sports-grid">
       ${sports.map(s => {
         const status = deriveSportStatus(s.id);
         const standings = getSportStandings(s.id);
+        const matches = getSportMatches(s.id).filter(m => (m.status || '').trim());
         const leaderName = standings[0] ? houseLabel(standings[0].houseId) : DASH;
         return `
           <a class="sport-card" href="#sport/${escapeAttr(s.id)}">
             <span class="badge ${badgeClass(status)}">${status}</span>
             <h4>${escapeHtml(s.icon)} ${escapeHtml(s.name)}</h4>
-            <p>${escapeHtml(s.description)}</p>
-            <div style="display:flex;justify-content:space-between;gap:10px;margin-top:14px;color:#d9e4f8;font-weight:700">
-              <span>${standings.length ? 'Leader: ' + escapeHtml(leaderName) : 'Awaiting data'}</span>
-              <span style="color:var(--muted)">${standings.length ? standings.length + ' houses' : ''}</span>
+            <p>${escapeHtml(textPreview(s.description, 72))}</p>
+            <div class="sport-meta">
+              <div class="sport-meta-row"><span>Leader</span><strong>${standings.length ? escapeHtml(leaderName) : 'Awaiting data'}</strong></div>
+              <div class="sport-meta-row"><span>Standings</span><strong>${standings.length}</strong></div>
+              <div class="sport-meta-row"><span>Matches</span><strong>${matches.length}</strong></div>
             </div>
           </a>
         `;
@@ -613,7 +659,7 @@ function renderHome(){
             <div class="update-item">
               <div style="font-weight:800">${escapeHtml(u.title)}</div>
               <div class="date">${fmtDate(u.date)}</div>
-              <p style="margin:10px 0 0;color:var(--muted)">${escapeHtml(u.content)}</p>
+              <p style="margin:10px 0 0;color:var(--muted)">${escapeHtml(textPreview(u.content, 140))}</p>
             </div>
           `).join('')}
         </div>` : `<div class="empty-inline">No updates published yet.</div>`}
@@ -622,27 +668,41 @@ function renderHome(){
   `;
 }
 function renderLeaderboard(){
-  updateTopbar('Overall Leaderboard', 'Large premium ranking based on total leaderboard points awarded across sports.');
+  updateTopbar('Overall Leaderboard', 'Simple ranking based on total leaderboard points across all sports.');
   const leaderboard = computeLeaderboard();
   const podium = leaderboard.slice(0,3);
   return `
     ${renderBanner()}
     <div class="leaderboard-hero">
       <div class="card mega-rank">
-        <div class="card-header"><div><h3>House Rankings</h3><div class="card-sub">Total points from sport standings</div></div><span class="badge ongoing">Live Table</span></div>
+        <div class="card-header"><div><h3>House Rankings</h3><div class="card-sub">The house with the most points is ranked highest.</div></div><span class="badge ongoing">Live Table</span></div>
         ${leaderboard.map(item => `
           <div class="house-rank-card" style="--accent-color:${item.color}">
             <div class="rank">#${item.rank}</div>
             <img src="${escapeAttr(item.logo)}" alt="${escapeAttr(item.name)}">
             <div>
               <h3>${escapeHtml(item.name)}</h3>
-              <div class="meta">${item.completedSports} completed entries • ${item.sportEntries} total sport entries</div>
+              <div class="meta">${item.completedSports} completed sports • ${item.sportEntries} total entries</div>
             </div>
             <div class="points">${item.total} pts</div>
           </div>
         `).join('')}
       </div>
       <div class="podium">
+        <div class="card">
+          <div class="card-header"><div><h3>Quick Summary</h3><div class="card-sub">Fast overview of the top houses.</div></div></div>
+          <div class="simple-list">
+            ${leaderboard.slice(0,4).map(item => `
+              <div class="simple-list-item">
+                <div>
+                  <strong>${escapeHtml(item.name)}</strong>
+                  <span>Rank #${item.rank}</span>
+                </div>
+                <strong style="color:${item.color}">${item.total} pts</strong>
+              </div>
+            `).join('')}
+          </div>
+        </div>
         ${podium.map(item => `
           <div class="podium-item" style="background:linear-gradient(180deg,${hexToRgba(item.color,.20)},rgba(12,16,23,.96));border-color:${hexToRgba(item.color,.35)}">
             <div class="small-note">Rank #${item.rank}</div>
@@ -853,6 +913,29 @@ function renderSportPage(sportId){
     </div>
 
     ${renderPlayerStatsForSport(sportId)}
+  `;
+}
+
+function renderAdminLogin(){
+  updateTopbar('Admin Access', 'Restricted portal for tournament administrators.');
+  if(localStorage.getItem(AUTH_KEY) === 'true'){
+    location.hash = '#admin';
+    return '';
+  }
+  return `
+    ${renderBanner()}
+    <div class="login-shell card">
+      <div class="card-header"><div><h3>Admin Login</h3><div class="card-sub">This area is restricted. Enter admin credentials to manage tournament data.</div></div></div>
+      <div class="form-grid">
+        ${field('Username', `<input id="adminUser" placeholder="Username" autocomplete="username">`)}
+        ${field('Password', `<input id="adminPass" type="password" placeholder="Password" autocomplete="current-password">`)}
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn" onclick="handleAdminLogin()">Login to Dashboard</button>
+        <button class="btn secondary" onclick="location.hash='#home'">Back to Site</button>
+      </div>
+      <div class="soft-note" style="margin-top:14px">This login is hidden from public navigation, but because the site is fully client-side it should not be treated as strong security.</div>
+    </div>
   `;
 }
 
@@ -1114,11 +1197,21 @@ function handleAdminLogin(){
   const password = document.getElementById('adminPass').value.trim();
   if(username === state.data.admin.username && password === state.data.admin.password){
     localStorage.setItem(AUTH_KEY, 'true');
-    render();
+    location.hash = '#admin';
     notify('Admin login successful.', 'success');
   } else notify('Invalid admin login credentials.', 'error');
 }
-function logoutAdmin(){ localStorage.removeItem(AUTH_KEY); render(); notify('Logged out from admin dashboard.', 'info'); }
+function logoutAdmin(){ localStorage.removeItem(AUTH_KEY); location.hash = '#home'; notify('Logged out from admin dashboard.', 'info'); }
+function handleBrandPortalClick(){
+  state.brandTapCount += 1;
+  clearTimeout(handleBrandPortalClick.timer);
+  handleBrandPortalClick.timer = setTimeout(() => { state.brandTapCount = 0; }, 1200);
+  if(state.brandTapCount >= 5){
+    state.brandTapCount = 0;
+    location.hash = '#admin-login';
+    notify('Admin portal opened.', 'info');
+  }
+}
 async function updateHouseField(id, key, value){
   const next = normalizeData(state.data);
   const house = next.houses.find(h => h.id === id);
@@ -1230,11 +1323,18 @@ function render(){
   state.params = parsed.params;
   const view = document.getElementById('appView');
   if(state.loading) view.innerHTML = renderLoading();
+  else if(state.route === 'admin-login') view.innerHTML = renderAdminLogin();
   else if(state.route === 'leaderboard') view.innerHTML = renderLeaderboard();
   else if(state.route === 'results') view.innerHTML = renderResults();
   else if(state.route === 'charts') { view.innerHTML = renderCharts(); setTimeout(mountCharts, 10); }
   else if(state.route === 'sport') view.innerHTML = renderSportPage(state.params);
-  else if(state.route === 'admin') view.innerHTML = renderAdmin();
+  else if(state.route === 'admin') {
+    if(localStorage.getItem(AUTH_KEY) === 'true') view.innerHTML = renderAdmin();
+    else {
+      location.hash = '#home';
+      view.innerHTML = renderHome();
+    }
+  }
   else view.innerHTML = renderHome();
   setActiveNav();
   syncConnectionPill();
@@ -1543,7 +1643,11 @@ function renderAdminPlayerStats(){
 
 Object.assign(window, { render, handleAdminLogin, logoutAdmin, showAdminSection, updateHouseField, updateSportField, addMatch, deleteMatch, saveStanding, deleteStanding, addUpdate, deleteUpdate, editMatch, editStanding, editUpdate, resetMatchForm, resetStandingForm, resetUpdateForm, setMatchFilter, setStandingFilter, setUpdateFilter, savePlayerEntry, deletePlayerEntry, editPlayerEntry, cancelPsEdit, saveTeamScore, setPsSport, setPsHouse });
 window.addEventListener('hashchange', render);
-window.addEventListener('DOMContentLoaded', () => { render(); initFirebaseSync(); });
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('brandPortal')?.addEventListener('click', handleBrandPortalClick);
+  render();
+  initFirebaseSync();
+});
 </script>
 
 </body>
