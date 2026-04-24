@@ -37,6 +37,9 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     img{max-width:100%;display:block}
     .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
     .sidebar{position:sticky;top:0;height:100vh;padding:24px;border-right:1px solid var(--border);background:rgba(8,10,14,.85);backdrop-filter:blur(18px);overflow:auto}
+    .mobile-menu-toggle,.mobile-menu-close{display:none}
+    .menu-backdrop{display:none}
+    .sidebar-head{display:none}
     .brand{display:grid;gap:12px;align-items:center;margin-bottom:24px;padding:14px;border-radius:20px;background:linear-gradient(180deg,rgba(18,23,31,.96),rgba(11,15,21,.92));border:1px solid rgba(255,255,255,.08)}
     .brand-mark{display:grid;place-items:center;min-height:98px;padding:10px;border-radius:18px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);overflow:hidden}
     .brand-mark::after{display:none}
@@ -115,6 +118,13 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     .updates-list{display:grid;gap:12px}
     .update-item{padding:16px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,#121924,#0d1219)}
     .update-item .date{color:var(--muted);font-size:.85rem}
+    .notice-board{margin-bottom:22px;padding:18px;border-radius:22px;background:linear-gradient(180deg,rgba(212,167,44,.13),rgba(17,22,30,.96));border:1px solid rgba(212,167,44,.28);box-shadow:var(--shadow)}
+    .notice-board .card-header{margin-bottom:14px}
+    .notice-feature{padding:16px;border-radius:18px;background:rgba(8,10,14,.46);border:1px solid rgba(255,255,255,.08)}
+    .notice-feature h3{margin:0;font-size:1.25rem}
+    .notice-feature p{margin:10px 0 0;color:#c8d3e8;line-height:1.55}
+    .notice-list{display:grid;gap:10px;margin-top:12px}
+    .notice-list .update-item{background:rgba(8,10,14,.34)}
     .section-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 14px}
     .section-title h3{margin:0;font-size:1.4rem}
     .section-title p{margin:6px 0 0;color:var(--muted)}
@@ -135,10 +145,12 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     .field{display:grid;gap:7px}
     .field label{font-size:.84rem;color:#c6d1e6;font-weight:700}
     input,select,textarea{width:100%;background:#0b1118;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px 14px;color:var(--text);font:inherit}
+    select{appearance:none;background-color:#0b1118;background-image:linear-gradient(45deg,transparent 50%,#b9c8e5 50%),linear-gradient(135deg,#b9c8e5 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:42px}
     input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(138,180,255,.5);box-shadow:0 0 0 3px rgba(138,180,255,.08)}
     textarea{min-height:92px;resize:vertical}
     .admin-layout{display:grid;grid-template-columns:260px 1fr;gap:18px}
     .admin-nav{display:grid;gap:10px;align-content:start}
+    .admin-nav .btn{text-align:left}
     .admin-section{display:none}
     .admin-section.active{display:block}
     .login-shell{max-width:460px;margin:40px auto}
@@ -203,6 +215,11 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     .ps-form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:14px}
     .ps-form-row .field{flex:1;min-width:120px}
     .ps-form-row .field input{padding:10px 12px}
+    .selector-panel{margin-bottom:16px;padding:14px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));border:1px solid rgba(255,255,255,.08)}
+    .selector-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .selector-grid .field{padding:12px;border-radius:16px;background:rgba(8,13,20,.76);border:1px solid rgba(255,255,255,.07)}
+    .selector-grid .field label{display:flex;align-items:center;gap:8px;margin-bottom:2px;color:#dbe7ff}
+    .selector-grid .field label::before{content:"";width:8px;height:8px;border-radius:999px;background:var(--accent);box-shadow:0 0 0 4px rgba(138,180,255,.12)}
     .result-team{display:flex;align-items:center;gap:10px;min-width:0}
     .result-team strong,.player-row .p-name{overflow-wrap:anywhere}
     .results-grid > .status-box{grid-column:1/-1}
@@ -216,9 +233,24 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
       .sports-grid{grid-template-columns:repeat(2,1fr)}
     }
     @media (max-width: 760px){
+      body.menu-open{overflow:hidden}
       .content{padding:16px 16px 40px}
-      .sidebar{padding:16px}
+      .sidebar{position:fixed;inset:0 auto 0 0;z-index:1001;width:min(86vw,340px);height:100dvh;padding:16px;transform:translateX(-105%);transition:transform .24s ease;background:rgba(8,10,14,.96);box-shadow:28px 0 70px rgba(0,0,0,.45);border-right:1px solid rgba(255,255,255,.12)}
+      body.menu-open .sidebar{transform:translateX(0)}
+      .menu-backdrop{display:block;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.56);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .24s ease}
+      body.menu-open .menu-backdrop{opacity:1;pointer-events:auto}
+      .sidebar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+      .brand{margin-bottom:18px}
+      .mobile-menu-toggle,.mobile-menu-close{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);font:inherit;font-size:1.35rem;line-height:1;cursor:pointer}
+      .mobile-menu-toggle{flex:0 0 auto}
+      .mobile-menu-close{border-radius:999px}
+      .sidebar .nav{gap:6px}
+      .sidebar .nav a{padding:13px 12px;border-radius:10px;font-size:.95rem}
+      .nav-group-title{margin:18px 0 10px}
+      .house-mini-grid{display:none}
       .topbar{flex-direction:column;align-items:flex-start}
+      .page-title{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+      .page-title h2,.page-title p{grid-column:2}
       .hero{padding:20px}
       .hero-stats,.kpi-row{grid-template-columns:repeat(2,1fr)}
       .sports-grid,.house-mini-grid{grid-template-columns:1fr}
@@ -227,12 +259,29 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
       .house-rank-card .points{grid-column:1/-1}
       .house-rank-card img{width:80px;height:80px}
       .ps-form-row{flex-direction:column}
+      input,select,textarea{font-size:16px}
+      select{min-height:48px;background-position:calc(100% - 22px) 50%,calc(100% - 16px) 50%}
+      .admin-nav{display:flex;gap:8px;overflow-x:auto;margin:-2px -4px 0;padding:2px 4px 10px;scroll-snap-type:x proximity}
+      .admin-nav .btn{flex:0 0 auto;white-space:nowrap;text-align:center;padding:11px 13px;border-radius:999px;scroll-snap-align:start}
+      .admin-nav .btn.danger{margin-left:auto}
+      .sticky-helper{position:relative;top:auto}
+      .selector-panel{padding:12px;margin-bottom:14px;border-radius:16px}
+      .selector-grid{grid-template-columns:1fr;gap:10px}
+      .selector-grid .field{padding:12px}
+      .selector-grid .field label{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em}
+      .selector-grid select{border-radius:12px;background-color:#101925}
+      .search-input{max-width:none}
     }
   </style>
 </head>
 <body>
   <div class="app">
+    <div class="menu-backdrop" onclick="closeMobileMenu()" aria-hidden="true"></div>
     <aside class="sidebar">
+      <div class="sidebar-head">
+        <strong>Menu</strong>
+        <button class="mobile-menu-close" type="button" onclick="closeMobileMenu()" aria-label="Close menu">×</button>
+      </div>
       <div class="brand" id="brandPortal">
         <div class="brand-mark">
           <img src="assets/site-logo-web.png" alt="Inter-House Tournament logo">
@@ -259,6 +308,7 @@ html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(138,180,25
     <main class="content">
       <div class="topbar">
         <div class="page-title">
+          <button class="mobile-menu-toggle" type="button" onclick="toggleMobileMenu()" aria-label="Open menu">☰</button>
           <h2 id="pageHeading">Dashboard</h2>
           <p id="pageSubheading">Live standings, sport details, and premium tournament insights.</p>
         </div>
@@ -554,7 +604,7 @@ function renderBanner(){
   return `<div class="sync-banner">${state.firebaseReady ? 'Live Firebase sync is active. Public pages update automatically when admin data changes.' : 'Firebase is not connected right now. The site is showing cached browser data until the connection returns.'}</div>`;
 }
 function renderHome(){
-  updateTopbar('Tournament Home', 'Clear standings, sport status, and latest updates.');
+  updateTopbar('Tournament Home', 'Notices, standings, sport status, and latest match updates.');
   const leaderboard = computeLeaderboard();
   const sports = sortedSports();
   const ongoing = sports.filter(s => deriveSportStatus(s.id) === 'Ongoing').length;
@@ -562,8 +612,34 @@ function renderHome(){
   const notStarted = sports.filter(s => deriveSportStatus(s.id) === 'Not Started Yet').length;
   const leader = leaderboard[0] || state.data.houses[0];
   const progress = sports.length ? Math.round((completed / sports.length) * 100) : 0;
-  const latestUpdate = [...state.data.updates].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+  const notices = [...state.data.updates].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const latestUpdate = notices[0];
   return `
+    <section class="notice-board">
+      <div class="card-header">
+        <div>
+          <h3>Notice</h3>
+          <div class="card-sub">Important tournament notices</div>
+        </div>
+        <span class="badge scheduled">Notice</span>
+      </div>
+      ${latestUpdate ? `
+        <div class="notice-feature">
+          <div class="date">${fmtDate(latestUpdate.date)}</div>
+          <h3>${escapeHtml(latestUpdate.title)}</h3>
+          <p>${escapeHtml(latestUpdate.content)}</p>
+        </div>
+        ${notices.length > 1 ? `<div class="notice-list">
+          ${notices.slice(1,4).map(u => `
+            <div class="update-item">
+              <div style="font-weight:800">${escapeHtml(u.title)}</div>
+              <div class="date">${fmtDate(u.date)}</div>
+              <p style="margin:8px 0 0;color:var(--muted)">${escapeHtml(textPreview(u.content, 120))}</p>
+            </div>
+          `).join('')}
+        </div>` : ''}
+      ` : `<div class="empty-inline">No notices published yet.</div>`}
+    </section>
     ${renderBanner()}
     <section class="hero">
       <div class="hero-grid">
@@ -596,9 +672,9 @@ function renderHome(){
             <div class="simple-progress"><div class="simple-progress-bar" style="width:${progress}%"></div></div>
           </div>
           <div class="overview-item">
-            <strong>Latest Update</strong>
-            <span>${escapeHtml(latestUpdate ? latestUpdate.title : 'No updates yet')}</span>
-            <div class="small-note">${escapeHtml(latestUpdate ? textPreview(latestUpdate.content, 90) : 'Announcements will appear here once they are published.')}</div>
+            <strong>Latest Notice</strong>
+            <span>${escapeHtml(latestUpdate ? latestUpdate.title : 'No notices yet')}</span>
+            <div class="small-note">${escapeHtml(latestUpdate ? textPreview(latestUpdate.content, 90) : 'Notices will appear here once they are published.')}</div>
           </div>
         </div>
       </div>
@@ -608,7 +684,7 @@ function renderHome(){
       <div class="card"><div class="card-header"><div><h3>Current Leader</h3><div class="card-sub">Overall first place</div></div><span class="badge ongoing">Rank #1</span></div><div style="font-size:2rem;font-weight:900;color:${leader.color}">${escapeHtml(leader.name)}</div><div class="small-note">${leader.total || 0} total points</div></div>
       <div class="card"><div class="card-header"><div><h3>Ongoing Sports</h3><div class="card-sub">Live competitions</div></div><span class="badge ongoing">Live</span></div><div style="font-size:2rem;font-weight:900">${ongoing}</div></div>
       <div class="card"><div class="card-header"><div><h3>Not Started</h3><div class="card-sub">Waiting for admin data</div></div><span class="badge not-started">Pending</span></div><div style="font-size:2rem;font-weight:900">${notStarted}</div></div>
-      <div class="card"><div class="card-header"><div><h3>Recent Updates</h3><div class="card-sub">Announcements published</div></div><span class="badge not-started">News</span></div><div style="font-size:2rem;font-weight:900">${state.data.updates.length}</div></div>
+      <div class="card"><div class="card-header"><div><h3>Notices</h3><div class="card-sub">Notices published</div></div><span class="badge scheduled">Notice</span></div><div style="font-size:2rem;font-weight:900">${notices.length}</div></div>
     </div>
 
     <div class="section-title"><div><h3>Sports Overview</h3><p>Each sport shows its live status, current leader, and how much data is available.</p></div></div>
@@ -653,16 +729,16 @@ function renderHome(){
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><div><h3>Recent Updates</h3><div class="card-sub">Latest announcements and tournament highlights</div></div></div>
-        ${state.data.updates.length ? `<div class="updates-list">
-          ${state.data.updates.sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5).map(u => `
+        <div class="card-header"><div><h3>Notice History</h3><div class="card-sub">Latest notices and tournament highlights</div></div></div>
+        ${notices.length ? `<div class="updates-list">
+          ${notices.slice(0,5).map(u => `
             <div class="update-item">
               <div style="font-weight:800">${escapeHtml(u.title)}</div>
               <div class="date">${fmtDate(u.date)}</div>
               <p style="margin:10px 0 0;color:var(--muted)">${escapeHtml(textPreview(u.content, 140))}</p>
             </div>
           `).join('')}
-        </div>` : `<div class="empty-inline">No updates published yet.</div>`}
+        </div>` : `<div class="empty-inline">No notices published yet.</div>`}
       </div>
     </div>
   `;
@@ -940,7 +1016,7 @@ function renderAdminLogin(){
 }
 
 function renderAdmin(){
-  updateTopbar('Admin Dashboard', 'Manage houses, sports, match results, standings, leaderboard totals and updates.');
+  updateTopbar('Admin Dashboard', 'Manage houses, sports, match results, standings, leaderboard totals and notices.');
   const isAuth = localStorage.getItem(AUTH_KEY) === 'true';
   if(!isAuth){
     return `
@@ -983,7 +1059,7 @@ function renderAdmin(){
       <div class="admin-stat"><span class="small-note">Sports</span><strong>${state.data.sports.length}</strong></div>
       <div class="admin-stat"><span class="small-note">Standings Rows</span><strong>${state.data.standings.length}</strong></div>
       <div class="admin-stat"><span class="small-note">Matches</span><strong>${state.data.matches.length}</strong></div>
-      <div class="admin-stat"><span class="small-note">Updates</span><strong>${state.data.updates.length}</strong></div>
+      <div class="admin-stat"><span class="small-note">Notices</span><strong>${state.data.updates.length}</strong></div>
     </div>
     <div class="admin-layout">
       <div class="card admin-nav sticky-helper">
@@ -992,7 +1068,7 @@ function renderAdmin(){
         <button class="btn ${state.adminView==='matches'?'':'secondary'}" onclick="showAdminSection('matches')">Manage Match Results</button>
         <button class="btn ${state.adminView==='standings'?'':'secondary'}" onclick="showAdminSection('standings')">Manage Sport Standings</button>
         <button class="btn ${state.adminView==='leaderboard'?'':'secondary'}" onclick="showAdminSection('leaderboard')">Overall Leaderboard</button>
-        <button class="btn ${state.adminView==='updates'?'':'secondary'}" onclick="showAdminSection('updates')">Recent Updates</button>
+        <button class="btn ${state.adminView==='updates'?'':'secondary'}" onclick="showAdminSection('updates')">Notices</button>
         <button class="btn ${state.adminView==='playerstats'?'':'secondary'}" onclick="showAdminSection('playerstats')">Manage Player Stats</button>
         <button class="btn danger" onclick="logoutAdmin()">Logout</button>
       </div>
@@ -1150,19 +1226,19 @@ function renderAdmin(){
         <section id="admin-updates" class="admin-section card">
           <div class="section-toolbar">
             <div>
-              <h3 style="margin:0">Recent Updates / Announcements</h3>
-              <div class="card-sub">Publish homepage news cards.</div>
+              <h3 style="margin:0">Notices</h3>
+              <div class="card-sub">Publish important notices at the top of the home page.</div>
             </div>
-            <input class="search-input" placeholder="Search announcements..." value="${state.updateFilter || ''}" oninput="setUpdateFilter(this.value)">
+            <input class="search-input" placeholder="Search notices..." value="${state.updateFilter || ''}" oninput="setUpdateFilter(this.value)">
           </div>
           <div class="admin-form-card">
             <div class="form-grid">
-              ${field('Update Title', `<input id="updateTitle" placeholder="Example: Football fixtures announced">`)}
+              ${field('Notice Title', `<input id="updateTitle" placeholder="Example: Football fixtures announced">`)}
               ${field('Date', `<input id="updateDate" type="date">`)}
             </div>
-            ${field('Content', `<textarea id="updateContent" placeholder="Write the update here"></textarea>`)}
+            ${field('Content', `<textarea id="updateContent" placeholder="Write the notice here"></textarea>`)}
             <div class="toolbar-actions" style="margin-top:12px">
-              <button id="updateSaveBtn" class="btn" onclick="addUpdate()">Add Update</button>
+              <button id="updateSaveBtn" class="btn" onclick="addUpdate()">Add Notice</button>
               <button id="updateCancelBtn" class="btn ghost" style="display:none" onclick="resetUpdateForm()">Cancel Edit</button>
             </div>
           </div>
@@ -1181,7 +1257,7 @@ function renderAdmin(){
                   </div>
                 </div>
               </div>
-            `).join('') || '<div class="empty-inline">No announcements found for this filter.</div>'}
+            `).join('') || '<div class="empty-inline">No notices found for this filter.</div>'}
           </div>
         </section>
 
@@ -1202,6 +1278,12 @@ function handleAdminLogin(){
   } else notify('Invalid admin login credentials.', 'error');
 }
 function logoutAdmin(){ localStorage.removeItem(AUTH_KEY); location.hash = '#home'; notify('Logged out from admin dashboard.', 'info'); }
+function toggleMobileMenu(){
+  document.body.classList.toggle('menu-open');
+}
+function closeMobileMenu(){
+  document.body.classList.remove('menu-open');
+}
 function handleBrandPortalClick(){
   state.brandTapCount += 1;
   clearTimeout(handleBrandPortalClick.timer);
@@ -1299,21 +1381,22 @@ async function addUpdate(){
   if(existing >= 0) next.updates[existing] = payload; else next.updates.unshift(payload);
   await persistData(next);
   resetUpdateForm();
-  notify(existing >= 0 ? 'Announcement updated successfully.' : 'Announcement added successfully.', 'success');
+  notify(existing >= 0 ? 'Notice updated successfully.' : 'Notice added successfully.', 'success');
 }
 async function deleteUpdate(id){
-  if(!confirmAction('Delete this announcement?')) return;
+  if(!confirmAction('Delete this notice?')) return;
   const next = normalizeData(state.data);
   next.updates = next.updates.filter(u => u.id !== id);
   await persistData(next);
   if(state.editingUpdateId === id) resetUpdateForm();
-  notify('Announcement deleted.', 'success');
+  notify('Notice deleted.', 'success');
 }
 function val(id){ return document.getElementById(id)?.value?.trim(); }
 function safeScore(v){ return v === '' || v === undefined || v === null ? DASH : v; }
 function field(label, control){ return `<div class="field"><label>${label}</label>${control}</div>`; }
 function parseRoute(){ const raw = (location.hash || '#home').replace('#',''); if(raw.startsWith('sport/')) return { route:'sport', params: raw.split('/')[1] }; return { route: raw || 'home', params: null }; }
 function render(){
+  closeMobileMenu();
   buildMiniHouses();
   buildSportLinks();
   setActiveNav();
@@ -1452,7 +1535,7 @@ function editUpdate(id){
     if(el('updateContent')) el('updateContent').value = u.content || '';
     const saveBtn = el('updateSaveBtn');
     const cancelBtn = el('updateCancelBtn');
-    if(saveBtn) saveBtn.textContent = 'Update Announcement';
+    if(saveBtn) saveBtn.textContent = 'Update Notice';
     if(cancelBtn) cancelBtn.style.display = '';
   }, 20);
 }
@@ -1633,18 +1716,29 @@ function renderAdminPlayerStats(){
 
   return `
     <div class="card-header"><div><h3>Manage Player Stats</h3><div class="card-sub">Add player names and sport-specific performance data per house.</div></div></div>
-    <div class="form-grid" style="margin-bottom:16px">
-      ${field('Sport', `<select id="psSportSelect" onchange="setPsSport(this.value)"><option value="">-- Select sport --</option>${sortedSports().map(s=>`<option value="${s.id}" ${s.id===sportId?'selected':''}>${escapeHtml(s.name)}</option>`).join('')}</select>`)}
-      ${field('House', `<select id="psHouseSelect" onchange="setPsHouse(this.value)"><option value="">-- Select house --</option>${state.data.houses.map(h=>`<option value="${h.id}" ${h.id===houseId?'selected':''}>${escapeHtml(h.name)}</option>`).join('')}</select>`)}
+    <div class="selector-panel">
+      <div class="selector-grid">
+        ${field('Sport Type', `<select id="psSportSelect" onchange="setPsSport(this.value)"><option value="">-- Select sport --</option>${sortedSports().map(s=>`<option value="${s.id}" ${s.id===sportId?'selected':''}>${escapeHtml(s.name)}</option>`).join('')}</select>`)}
+        ${field('House', `<select id="psHouseSelect" onchange="setPsHouse(this.value)"><option value="">-- Select house --</option>${state.data.houses.map(h=>`<option value="${h.id}" ${h.id===houseId?'selected':''}>${escapeHtml(h.name)}</option>`).join('')}</select>`)}
+      </div>
     </div>
     ${formHtml}
   `;
 }
 
-Object.assign(window, { render, handleAdminLogin, logoutAdmin, showAdminSection, updateHouseField, updateSportField, addMatch, deleteMatch, saveStanding, deleteStanding, addUpdate, deleteUpdate, editMatch, editStanding, editUpdate, resetMatchForm, resetStandingForm, resetUpdateForm, setMatchFilter, setStandingFilter, setUpdateFilter, savePlayerEntry, deletePlayerEntry, editPlayerEntry, cancelPsEdit, saveTeamScore, setPsSport, setPsHouse });
+Object.assign(window, { render, handleAdminLogin, logoutAdmin, showAdminSection, updateHouseField, updateSportField, addMatch, deleteMatch, saveStanding, deleteStanding, addUpdate, deleteUpdate, editMatch, editStanding, editUpdate, resetMatchForm, resetStandingForm, resetUpdateForm, setMatchFilter, setStandingFilter, setUpdateFilter, savePlayerEntry, deletePlayerEntry, editPlayerEntry, cancelPsEdit, saveTeamScore, setPsSport, setPsHouse, toggleMobileMenu, closeMobileMenu });
 window.addEventListener('hashchange', render);
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('brandPortal')?.addEventListener('click', handleBrandPortalClick);
+  document.querySelector('.sidebar')?.addEventListener('click', event => {
+    if(event.target.closest('a')) closeMobileMenu();
+  });
+  window.addEventListener('keydown', event => {
+    if(event.key === 'Escape') closeMobileMenu();
+  });
+  window.addEventListener('resize', () => {
+    if(window.innerWidth > 760) closeMobileMenu();
+  });
   render();
   initFirebaseSync();
 });
